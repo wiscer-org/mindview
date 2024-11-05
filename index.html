@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MindView - Seeing blindfolded</title>
+    <style>
+        /* Zen-inspired minimalist styles */
+        /* Zen-inspired minimalist styles */
+        body {
+            font-family: 'Noto Serif', serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f5f5f5;
+            /* Slightly lighter for a softer background */
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 60px 20px;
+            /* Increased padding for more whitespace */
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            /* Soft gradient */
+            color: #2c3e50;
+            /* Darker, calming text color */
+            border-bottom: 1px solid #d1d1d1;
+            /* Lighter border for subtle separation */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            /* Soft blue gradient */
+            background: linear-gradient(135deg, #bde0fe 0%, #a2d2ff 100%);
+            /* Soft green gradient */
+            /* background: linear-gradient(135deg, #c9f7f5 0%, #a8e6cf 100%); */
+            /* Soft lavender gradient */
+            /* background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); */
+
+            /* Optional: Add a subtle background pattern or image */
+            /* background: url('path-to-your-subtle-pattern.png') center/cover no-repeat, linear-gradient(...); */
+        }
+
+        h1 {
+            font-weight: 300;
+            /* Lighter weight for elegance */
+            font-size: 2.5em;
+            margin: 0;
+            color: #2c3e50;
+            /* Consistent text color */
+            font-family: 'Playfair Display', serif;
+            /* Elegant serif font */
+        }
+
+        #hero-sub-title {
+            font-size: 1.2em;
+            /* Slightly smaller for hierarchy */
+            font-weight: 300;
+            color: #34495e;
+            /* Complementary soft color */
+            margin-top: 15px;
+            max-width: 700px;
+        }
+
+        header p {
+            max-width: 800px;
+            margin: 20px auto 0;
+            font-size: 1em;
+            color: #555555;
+            /* Softer text color for readability */
+        }
+
+        header a#link-to-help {
+            color: #2980b9;
+            /* Calming blue */
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-bottom 0.3s, color 0.3s;
+        }
+
+        header a#link-to-help:hover {
+            color: #1c5980;
+            border-bottom: 1px solid #1c5980;
+        }
+
+        p {
+            max-width: 800px;
+            margin: 20px auto;
+            font-size: 1.1em;
+        }
+
+        main {
+            padding: 40px 20px;
+        }
+
+        main>article {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        article .link-to-tool {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            /* background-color: #4caf50; */
+            background: linear-gradient(135deg, blue 0%, lightblue 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        article .link-to-tool:hover {
+            background-color: #388e3c;
+        }
+
+        #link-to-help {
+            font-size: 1.1em;
+            color: #007BFF;
+            text-decoration: underline;
+            padding: 5px 10px;
+            display: inline-block;
+        }
+
+        #link-to-help:hover {
+            color: #0056b3;
+        }
+
+        .footer {
+            height: 200px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #333;
+            color: #f0f0f0;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Welcome to MindView - Unlock Your Potential</h1>
+        <p id="hero-sub-title">Discover powerful tools designed to help you practice seeing blindfolded</p>
+        <p>
+            Below is a collection of engaging tools to help you sharpen your seeing-blindfolded skills while having fun.
+            Click <a href="./about.html" id="link-to-help">MindView help page here</a> for further info. All tools are
+            optimized for tablets / iPads with screen reader being activated.
+        </p>
+    </header>
+
+    <main>
+        <article>
+            <h2>Random Color Simple</h2>
+            <p>Beginner practice: seeing single color in screen. Answer is provided with a click of a button</p>
+            <a href="./random-color-simple" class="link-to-tool">Try Random Color Simple</a>
+        </article>
+        <article>
+            <h2>Two Similar Colors</h2>
+            <p>Seeing two similar colors in screen. Answer is provided with a click of a button</p>
+            <a href="./two-similar-colors" class="link-to-tool">Try Two Similar Colors</a>
+        </article>
+        <article>
+            <h2>Read Simple Word</h2>
+            <p>Enhance your reading speed and focus by practicing with simple, randomly generated words. You can adjust
+                the font size to suit your preference.</p>
+            <a href="./read-simple-word/" class="link-to-tool">Try Read Simple Word</a>
+        </article>
+        <article>
+            <h2>Pop the Balloons - Color Recognition Game</h2>
+            <p>Improve your color recognition skills by popping the balloons of the designated color. It's a fun way to
+                train your color detection and direction orientation.</p>
+            <p>Note: Turn off / deactivate screen reader when using this tool</p>
+            <a href="./pop-the-balloon/" class="link-to-tool">Try Pop The Balloons</a>
+        </article>
+
+        <article>
+            <h2>Shape Dig - Shape recognition game</h2>
+            <p>
+                This game challenges you to 'see' specific shape among other shapes.
+                Get maximum score, with 5 lives, by tap on on the same shape you first time tapp.
+                Colors of the shape are disregarded.
+            </p>
+            <p>Note: Turn off / deactivate screen reader when using this tool</p>
+            <a href="./shape-dig" class="link-to-tool">Try Shape Dig game</a>
+        </article>
+    </main>
+    <footer class="footer">
+        &copy; 2024
+    </footer>
+</body>
+
+</html>
