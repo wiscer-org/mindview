@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Phaser Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-container"></div>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            parent: 'game-container',
+            width: window.innerWidth,
+            height: window.innerHeight,
+            backgroundColor: '#2d2d2d',
+            scene: {
+                preload: function () { console.log('Preload called'); },
+                create: function () {
+                    console.log('Create called');
+                    this.add.text(100, 100, 'Phaser is working!', { fill: '#ffffff' });
+                }
+            }
+        };
+        const game = new Phaser.Game(config);
+    </script>
+</body>
+
+</html>
