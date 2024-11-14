@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Whack The Mole</title>
+    <!-- Include Phaser Library -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+    <!-- Include the game.js script -->
+    <script src="./game.js" defer></script>
+
+    <style>
+        body {
+            background-color: black;
+            background: black;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Game Container -->
+    <div id="game-container"></div>
+
+    <!-- Initialize the Game -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new WhackTheMole({
+                visibleTimeout: 2, // Mole visible for 2 seconds
+                onWhacked: () => {
+                    console.log('Mole whacked!');
+                    // Handle score increment or other logic here
+                },
+                parent: 'game-container', // ID of the div where the game will be rendered
+                width: 800,
+                height: 600
+            });
+
+            // Example controls (optional)
+            // Start a new game
+            game.newGame();
+
+            // Pause the game
+            // game.pauseGame();
+
+            // Resume the game
+            // game.resumeGame();
+
+            // Change the visible timeout to 3 seconds
+            // game.setVisibleTimeout(3);
+        });
+    </script>
+</body>
+
+</html>
