@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dartsy Fartsy</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+    <div class="f-c  top left">
+        <!-- Home Button -->
+        <button id="home-button" class="button" aria-label="MindView home">
+            <i class="fas fa-home"></i>
+        </button>
+        <!-- About Button -->
+        <button id="about-button" class="button" aria-label="About">
+            <i class="fas fa-circle-question"></i>
+        </button>
+        <!-- Settings Button -->
+        <button id="settings-button" class="button" aria-label="Settings">
+            <i class="fas fa-cog"></i>
+        </button>
+        <!-- New Game Button -->
+        <button id="new-game-button" class="button" aria-label="New Game">
+            <i class="fas fa-refresh"></i>
+        </button>
+    </div>
+
+    <div class="f-c top center">
+        <div class="fiery-text score">3,512</div>
+    </div>
+
+    <div id="lives-c" class="f-c top right">
+            🤍🤍❤️❤️❤️
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="reveal" data-reveal>
+        <h2>Settings</h2>
+        <p>Configure your game settings here.</p>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <!-- Your Game Canvas -->
+    <div id="game-container"></div>
+
+    <!-- Foundation CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css"
+        crossorigin="anonymous">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../style2.css">
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- Phaser.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js" defer></script>
+
+    <!-- Foundation JS (required for modal functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" crossorigin="anonymous" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js" crossorigin="anonymous"
+        defer></script>
+
+    <!-- Initialize Foundation and Game JS -->
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Foundation
+            $(document).foundation();
+
+            // Initialize Phaser Game
+            const config = {
+                type: Phaser.AUTO,
+                parent: 'game-container',
+                width: 900,
+                height: 600,
+                scene: {
+                    preload: preload,
+                    create: create,
+                    update: update
+                }
+            };
+
+            // const game = new Phaser.Game(config);
+
+            function preload() {
+                // Load assets
+                //this.load.image('dartboard', 'path/to/dartboard.png');
+            }
+
+            function create() {
+                // Create dartboard sprite
+                const dartboard = this.add.sprite(400, 300, 'dartboard');
+                // Add animations and interactions as needed
+            }
+
+            function update() {
+                // Game loop logic
+            }
+
+            // Function to open the Settings modal
+            function openSettings() {
+                $('#settings-modal').foundation('open');
+            }
+
+            // Attach the click event to the Settings button
+            document.getElementById('settings-button').addEventListener('click', openSettings);
+        });
+    </script>
+
+    <!-- Custom Game JS -->
+    <script src="./game.js" defer></script>
+</body>
+
+</html>
