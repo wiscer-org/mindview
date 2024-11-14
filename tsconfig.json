@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "ESNext",
+        "strict": true,
+        "jsx": "react",
+        // `outDir neet to be set in each app folder
+        // "outDir": "{app-name}/dist",
+        // `rootDir`n need to be set in each app folder
+        // "rootDir": "{app-name}/src",
+        "esModuleInterop": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "mindview",
+  "version": "1.0.0",
+  "description": "Tools to practice mindsight / blindfolded seeing",
+  "main": "lib.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build:random-color-simple": "esbuild ./random-color-simple/src/index.ts --bundle --outdir=./random-color-simple/dist --platform=node --target=es6",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3"
+  }
+}
