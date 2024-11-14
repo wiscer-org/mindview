@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wipe The Chalk</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            background: red;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 
+    <div id="game-container">
+    </div> 
+        -->
+
+    <!-- Include PhaserJS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
+    <!-- Include the WipeTheChalk Class -->
+    <script src="./wipe-the-chalk.js"></script>
+
+    <script defer>
+        // Define callback functions
+        const onChalkWiped = () => {
+            console.log('Chalk segment wiped!');
+            // Handle scoring or other external logic here
+        };
+
+        const onWipeFailed = () => {
+            console.log('Wipe failed! Eraser moved too far.');
+            // Handle game over or other external logic here
+        };
+
+        // Instantiate the game
+        const game = new WipeTheChalk({
+            onChalkWiped,
+            onWipeFailed
+        });
+
+        // Start a new game with desired settings
+        game.newGame({
+            chalkWidth: 5,      // Thickness of chalk
+            chalkColor: 0xFFFFFF // White chalk
+        });
+
+        // Example of using other methods after some time
+        // setTimeout(() => {
+        //     game.freezeGame();
+        // }, 10000);
+
+        // setTimeout(() => {
+        //     game.resumeGame();
+        // }, 15000);
+
+        // Example of erasing the board after 20 seconds
+        // setTimeout(() => {
+        //     game.eraseBoard();
+        // }, 20000);
+    </script>
+</body>
+
+</html>
