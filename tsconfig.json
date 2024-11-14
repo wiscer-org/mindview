@@ -8,11 +8,14 @@
         // "outDir": "{app-name}/dist",
         // `rootDir`n need to be set in each app folder
         // "rootDir": "{app-name}/src",
+        // "rootDir": "./random-color-simple/src",
         "esModuleInterop": true,
         "skipLibCheck": true
     },
     "include": [
-        "src"
+        "src",
+        // Value below only to satisfy problems checker in VSCode
+        "./random-color-simple/src"
     ],
     "exclude": [
         "node_modules",
