@@ -1,0 +1,9 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    // "outDir": "../../assets/scripts",
+    // "rootDir": "./src",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
