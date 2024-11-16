@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>Application Name</title>
     <style id="starter-style">
         body {
@@ -116,6 +117,40 @@
                 transform: translateX(-50%) scale(1.5);
             }
         }
+
+        /* Pop-In Animation Class */
+        .pop-in {
+            opacity: 0;
+            transform: translateX(-50%) scale(0.5);
+            /* Scale down for pop-in effect */
+        }
+
+        /* Optional: Adding a slight rotation for extra bounce */
+        .pop-in {
+            animation: bounceIn 0.6s forwards;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) scale(1.5);
+            }
+
+            60% {
+                opacity: 1;
+                transform: translateX(-50%) scale(0.8);
+            }
+
+            80% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+        }
     </style>
 </head>
 
@@ -137,11 +172,16 @@
             // Add the pop-out class to trigger the CSS animation
             container.classList.add('pop-out');
 
+            setTimeout(() => {
+                container.classList.remove('pop-out');
+                container.classList.add('pop-in');
+            }, 3000);
+
             // Listen for the end of the animation to remove the container
-            container.addEventListener('animationend', function handleAnimationEnd() {
-                container.removeEventListener('animationend', handleAnimationEnd);
-                container.parentNode.removeChild(container);
-            });
+            // container.addEventListener('animationend', function handleAnimationEnd() {
+            //     container.removeEventListener('animationend', handleAnimationEnd);
+            //     container.parentNode.removeChild(container);
+            // });
         }
 
         // Call cleanUpStarter after 2 seconds (2000 milliseconds)
@@ -162,6 +202,9 @@
         }, 5000);
 
     </script>
+    <script src="/assets/scripts/starter.v1.js"></script>
+
+
 </body>
 
 </html>
