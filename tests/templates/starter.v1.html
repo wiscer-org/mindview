@@ -13,33 +13,9 @@
             height: 100vh;
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
-            /* Optional: Background color */
             display: flex;
             justify-content: center;
             align-items: flex-start;
-        }
-
-        #starter-container {
-            position: fixed;
-            /* Ensures the container stays on top */
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            padding: 20px 40px;
-            border: 2px solid #ddd;
-            /* Thick border */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            /* Shadow around the container */
-            background-color: #fff;
-            /* Optional: Background color for container */
-            border-radius: 10px;
-            /* Optional: Rounded corners */
-            z-index: 1000;
-            /* Ensures the container is on top */
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55),
-                opacity 0.6s ease;
-            /* Initial transition properties for the pop-out effect */
         }
 
         h1 {
@@ -53,14 +29,12 @@
             font-size: 24px;
             margin-top: 10px;
             color: #333;
-            /* Optional: Text color */
         }
 
         .assets {
             font-weight: normal;
             font-size: 16px;
             color: #666;
-            /* Optional: Text color */
             margin-top: 5px;
         }
 
@@ -84,16 +58,31 @@
             }
         }
 
-        /* Pop-Out/Bouncy Animation Class */
+        .mv-modal {
+            position: fixed;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            padding: 20px 40px;
+            border: 2px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            border-radius: 10px;
+            z-index: 1000;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.6s ease;
+        }
+
         .pop-out {
             opacity: 0;
             transform: translateX(-50%) scale(1.5);
-            /* Scale up for pop-out effect */
+            animation: bounceOut 0.6s forwards;
         }
 
-        /* Optional: Adding a slight rotation for extra bounce */
-        .pop-out {
-            animation: bounceOut 0.6s forwards;
+        .pop-in {
+            opacity: 0;
+            transform: translateX(-50%) scale(0.5);
+            animation: bounceIn 0.6s forwards;
         }
 
         @keyframes bounceOut {
@@ -116,18 +105,6 @@
                 opacity: 0;
                 transform: translateX(-50%) scale(1.5);
             }
-        }
-
-        /* Pop-In Animation Class */
-        .pop-in {
-            opacity: 0;
-            transform: translateX(-50%) scale(0.5);
-            /* Scale down for pop-in effect */
-        }
-
-        /* Optional: Adding a slight rotation for extra bounce */
-        .pop-in {
-            animation: bounceIn 0.6s forwards;
         }
 
         @keyframes bounceIn {
@@ -155,56 +132,33 @@
 </head>
 
 <body>
-    <div id="starter-container" tabindex="-1" role="status">
+    <div class="mv-modal" tabindex="-1" role="status">
         <h1>App Name</h1>
-        <!-- IMPORTANT! somehow aria-label below will not be read by NVDA but it is needed to allow the next element to be rad by NVDA. Use '...' to control which the starting read point by NVDA. -->
-        <!-- <div class="spinner" aria-label="Loading.......................   "></div> -->
         <div class="spinner" aria-label="Loading image" aria-hidden="true"></div>
         <div id="info-alert" role="alert">loading assets</div>
-        <div id="info-status" role="status"> 10 of 20 </div>
+        <div id="info-status" role="status">
+            this is a very long text.this is a very long text.this is a very long text.
+            this is a very long text.this is a very long text.this is a very long text.
+            this is a very long text.this is a very long text.this is a very long text.
+            this is a very long text.this is a very long text.this is a very long text.
+            this is a very long text.this is a very long text.this is a very long text.
+        </div>
     </div>
 
     <script>
         function cleanUpStarter() {
-            const container = document.getElementById('starter-container');
+            const container = document.querySelector('.mv-modal');
             if (!container) return;
 
-            // Add the pop-out class to trigger the CSS animation
             container.classList.add('pop-out');
 
             setTimeout(() => {
                 container.classList.remove('pop-out');
                 container.classList.add('pop-in');
             }, 3000);
-
-            // Listen for the end of the animation to remove the container
-            // container.addEventListener('animationend', function handleAnimationEnd() {
-            //     container.removeEventListener('animationend', handleAnimationEnd);
-            //     container.parentNode.removeChild(container);
-            // });
         }
-
-        // Call cleanUpStarter after 2 seconds (2000 milliseconds)
-        setTimeout(cleanUpStarter, 9000);
-
-
-        let counter = 1;
-        let statusElement = document.querySelector('#info-status');
-        if (!statusElement) alert('status elemetn not found');
-
-        for (let c = 1; c < 12; c++) {
-            setTimeout(() => {
-                statusElement.textContent = `${c} of ${c + 1}`;
-            }, c * 400);
-        }
-        setTimeout(() => {
-            document.querySelector('#info-alert').textContent = 'Loading complete';
-        }, 5000);
-
     </script>
     <script src="/assets/scripts/starter.v1.js"></script>
-
-
 </body>
 
 </html>
