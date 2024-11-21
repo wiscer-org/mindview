@@ -13,7 +13,7 @@
         "skipLibCheck": true
     },
     "include": [
-        "src",
+        "_src",
         // Value below only to satisfy problems checker in VSCode
         "./random-color-simple/src"
     ],
