@@ -13,8 +13,3 @@ export class HomeButton extends Button {
         window.location.href = '/';
     }
 }
-
-// Override the static factory method
-Button.HOME = (): Button => {
-    return new HomeButton();
-};

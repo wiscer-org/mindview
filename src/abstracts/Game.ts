@@ -1,11 +1,16 @@
+import * as Mv from '../Mv';
+
 export abstract class Game {
     protected state: string = 'INITIALIZING';
+    protected composer: Mv.Composer;
 
     /**
      * Accept `Mv.Composer` instance.
      * This will allow object to communicate with the composer
      */
-    abstract setComposer(composer): void;
+    setComposer(composer: Mv.Composer): void {
+        this.composer = composer;
+    }
     abstract init(): void;
     abstract start(): void;
     abstract pause(): void;

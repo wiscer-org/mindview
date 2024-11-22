@@ -3,13 +3,8 @@ import { Game } from './Game';
 
 export abstract class Composer {
     constructor(protected game: Game) {
-        
+        game.setComposer(this)
     }
-    /**
-     * 
-     */
-
-
     /**
      * start composing and take over whole control
      */

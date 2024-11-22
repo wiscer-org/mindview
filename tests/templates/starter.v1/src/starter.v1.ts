@@ -12,9 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
     composer.addButton(Mv.Buttons.home());
     composer.addButton(Mv.Buttons.info())
 
-    // Attach comp
-    mvGame.setComposer(composer);
-
     // Pass the control to composer to start everything
     composer.start();
 });

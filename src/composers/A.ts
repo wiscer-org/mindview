@@ -3,6 +3,9 @@ import { Game } from '../abstracts/Game';
 import { Button } from '../abstracts/Button';
 
 export class ComposerA extends Composer {
+    /**
+     * Start everything
+     */
     start(): void {
         // Container to hold things to be waited before starting
         let thingsToWait: Promise<void>[] = []
