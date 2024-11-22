@@ -1,4 +1,24 @@
 "use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 
 // src/abstracts/Composer.ts
 var Composer = class {
@@ -6,6 +26,11 @@ var Composer = class {
     this.game = game;
     this.buttons = [];
     game.setComposer(this);
+    this.createContainers();
+    this.layoutContainers();
+  }
+  layoutContainers() {
+    document.body.appendChild(this.topLeft);
   }
   /**
    * Add control button
@@ -87,6 +112,20 @@ var Game = class {
   }
 };
 
+// src/buttons/Home.ts
+var HomeButton = class extends Button {
+  constructor() {
+    super("Home", "fa-home", {
+      id: "home-button",
+      "ariaLabel": "MindView home"
+    });
+    this.element.onclick = () => this.onClick();
+  }
+  onClick() {
+    window.location.href = "/";
+  }
+};
+
 // src/composers/Alpha.ts
 var Alpha = class extends Composer {
   /**
@@ -94,6 +133,31 @@ var Alpha = class extends Composer {
    */
   start() {
     let thingsToWait = [];
+    thingsToWait.push(this.loadCss("https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css"));
+    thingsToWait.push(this.loadCss("/assets/styles/generic.css"));
+    this.layoutButtons();
+  }
+  loadCss(path) {
+    return __async(this, null, function* () {
+      const cssLink = document.createElement("link");
+      cssLink.rel = "stylesheet";
+      cssLink.href = path;
+      document.head.appendChild(cssLink);
+      return new Promise((resolve) => {
+        cssLink.onload = () => {
+          resolve();
+        };
+      });
+    });
+  }
+  layoutButtons() {
+    let buttonsOrder = [HomeButton];
+    buttonsOrder.forEach((ButtonType) => {
+      const button = this.buttons.find((b) => b instanceof ButtonType);
+      if (button) {
+        this.topLeft.appendChild(button.getHTMLElement());
+      }
+    });
   }
   onGameReady() {
     throw new Error("Method not implemented.");
@@ -137,20 +201,6 @@ var Composers = {
   },
   Beta(game) {
     return new Beta(game);
-  }
-};
-
-// src/buttons/Home.ts
-var HomeButton = class extends Button {
-  constructor() {
-    super("Home", "fa-home", {
-      id: "home-button",
-      "ariaLabel": "MindView home"
-    });
-    this.element.onclick = () => this.onClick();
-  }
-  onClick() {
-    window.location.href = "/";
   }
 };
 

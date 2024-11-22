@@ -4,6 +4,12 @@ import { Game } from './Game';
 export abstract class Composer {
     constructor(protected game: Game) {
         game.setComposer(this)
+
+        this.createContainers();
+        this.layoutContainers();
+    }
+    layoutContainers() {
+        document.body.appendChild(this.topLeft)
     }
     /**
      * start composing and take over whole control
