@@ -27,7 +27,4 @@ export class Beta extends Composer {
         }
     }
 
-    addButton(button: Button): void {
-        this.container.appendChild(button.getHTMLElement());
-    }
 }

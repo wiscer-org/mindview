@@ -17,10 +17,39 @@ export abstract class Composer {
      * Add control button
      * @param button 
      */
-    abstract addButton(button: Button): void;
+    public addButton(button: Button) {
+        this.buttons.push(button);
+    };
 
     /**
      * Callback to be called by `Game` instance when `Game` instance is ready
      */
     abstract onGameReady(): void;
+
+    protected topLeft: HTMLElement;
+    protected topRight: HTMLElement;
+    protected bottomLeft: HTMLElement;
+    protected bottomRight: HTMLElement;
+
+    protected buttons: Button[] = [];
+    private createContainers() {
+        this.topLeft = this.createCornerContainer();
+        this.topLeft.classList.add('top');
+        this.topLeft.classList.add('left');
+        this.topRight = this.createCornerContainer();
+        this.topRight.classList.add('top');
+        this.topLeft.classList.add('right');
+        this.bottomLeft = this.createCornerContainer();
+        this.bottomLeft.classList.add('bottom');
+        this.bottomLeft.classList.add('left');
+        this.bottomRight = this.createCornerContainer();
+        this.bottomRight.classList.add('bottom');
+        this.bottomLeft.classList.add('right');
+    }
+
+    private createCornerContainer(): HTMLElement {
+        const container = document.createElement('div');
+        container.classList.add('f-c')
+        return container;
+    }
 }
