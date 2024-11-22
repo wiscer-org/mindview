@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let mvGame: Mv.Game = new SampleGame();
 
     // Get composer
-    let composer: Mv.Composer = Mv.Composers.A(mvGame);
+    let composer: Mv.Composer = Mv.Composers.Alpha(mvGame);
     composer.addButton(Mv.Buttons.home());
     composer.addButton(Mv.Buttons.info())
 

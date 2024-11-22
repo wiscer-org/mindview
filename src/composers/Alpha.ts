@@ -2,7 +2,7 @@ import { Composer } from '../abstracts/Composer';
 import { Game } from '../abstracts/Game';
 import { Button } from '../abstracts/Button';
 
-export class ComposerA extends Composer {
+export class Alpha extends Composer {
     /**
      * Start everything
      */

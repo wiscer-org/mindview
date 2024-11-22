@@ -2,7 +2,7 @@ import { Composer } from '../abstracts/Composer';
 import { Game } from '../abstracts/Game';
 import { Button } from '../abstracts/Button';
 
-export class ComposerB extends Composer {
+export class Beta extends Composer {
     start(): void {
         throw new Error('Method not implemented.');
     }

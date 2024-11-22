@@ -1,13 +1,13 @@
 import { Composer } from '../abstracts/Composer';
 import { Game } from '../abstracts/Game';
-import { ComposerA } from './A';
-import { ComposerB } from './B';
+import { Alpha } from './Alpha';
+import { Beta } from './Beta';
 
 export const Composers = {
-    A(game: Game): Composer {
-        return new ComposerA(game);
+    Alpha(game: Game): Composer {
+        return new Alpha(game);
     },
-    B(game: Game): Composer {
-        return new ComposerB(game);
+    Beta(game: Game): Composer {
+        return new Beta(game);
     }
 } as const;
