@@ -115,7 +115,7 @@ var Game = class {
 // src/buttons/Home.ts
 var HomeButton = class extends Button {
   constructor() {
-    super("Home", "fa-home", {
+    super("", "fa-home", {
       id: "home-button",
       "ariaLabel": "MindView home"
     });
@@ -133,8 +133,11 @@ var Alpha = class extends Composer {
    */
   start() {
     let thingsToWait = [];
+    thingsToWait.push(this.loadCss("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"));
     thingsToWait.push(this.loadCss("https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css"));
     thingsToWait.push(this.loadCss("/assets/styles/generic.css"));
+    thingsToWait.push(this.loadScript("https://code.jquery.com/jquery-3.6.0.min.js"));
+    thingsToWait.push(this.loadScript("https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"));
     this.layoutButtons();
   }
   loadCss(path) {
@@ -142,11 +145,32 @@ var Alpha = class extends Composer {
       const cssLink = document.createElement("link");
       cssLink.rel = "stylesheet";
       cssLink.href = path;
+      cssLink.crossOrigin = "anonymous";
+      cssLink.referrerPolicy = "no-referrer";
       document.head.appendChild(cssLink);
       return new Promise((resolve) => {
         cssLink.onload = () => {
           resolve();
         };
+      });
+    });
+  }
+  /**
+  * Load script async
+  */
+  loadScript(path) {
+    return __async(this, null, function* () {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = path;
+        script.defer = true;
+        script.onload = () => {
+          resolve();
+        };
+        script.onerror = (error) => {
+          reject(error);
+        };
+        document.head.appendChild(script);
       });
     });
   }
