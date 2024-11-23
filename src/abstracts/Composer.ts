@@ -2,8 +2,11 @@ import { Button } from './Button';
 import { Game } from './Game';
 
 export abstract class Composer {
+    // Assets to be loaded
+    protected assetsToLoad: Promise<void>[] = [];
+
     constructor(protected game: Game) {
-        game.setComposer(this)
+        game.setComposer(this);
 
         this.createContainers();
         this.layoutContainers();
@@ -26,11 +29,6 @@ export abstract class Composer {
     public addButton(button: Button) {
         this.buttons.push(button);
     };
-
-    /**
-     * Callback to be called by `Game` instance when `Game` instance is ready
-     */
-    abstract onGameReady(): void;
 
     protected topLeft: HTMLElement;
     protected topRight: HTMLElement;

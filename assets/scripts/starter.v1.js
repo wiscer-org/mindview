@@ -1,4 +1,7 @@
 "use strict";
+var __getProtoOf = Object.getPrototypeOf;
+var __reflectGet = Reflect.get;
+var __superGet = (cls, obj, key) => __reflectGet(__getProtoOf(cls), key, obj);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
@@ -24,6 +27,8 @@ var __async = (__this, __arguments, generator) => {
 var Composer = class {
   constructor(game) {
     this.game = game;
+    // Assets to be loaded
+    this.assetsToLoad = [];
     this.buttons = [];
     game.setComposer(this);
     this.createContainers();
@@ -126,25 +131,56 @@ var HomeButton = class extends Button {
   }
 };
 
-// src/composers/Alpha.ts
-var Alpha = class extends Composer {
-  /**
-   * Start everything
-   */
-  start() {
-    let thingsToWait = [];
-    thingsToWait.push(this.loadCss("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"));
-    thingsToWait.push(this.loadCss("https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css"));
-    thingsToWait.push(this.loadCss("/assets/styles/generic.css"));
-    thingsToWait.push(this.loadScript("https://code.jquery.com/jquery-3.6.0.min.js"));
-    thingsToWait.push(this.loadScript("https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"));
-    this.layoutButtons();
+// src/abstracts/Loader.ts
+var Loader = class {
+  constructor() {
+    this.toLoad = [];
+    this.toLoadOnBackgrund = [];
   }
-  loadCss(path) {
+  setToLoad(src) {
+    this.toLoad.push(src);
+  }
+  setToLoadOnBackground(src) {
+    this.toLoadOnBackgrund.push(src);
+  }
+  load() {
+    return __async(this, null, function* () {
+      let promises = this.toLoad.map((src) => {
+        return this.mapTypeAndLoad(src);
+      });
+      return new Promise((resolve, reject) => {
+        Promise.all(promises).then(() => resolve()).catch((error) => reject(error));
+      });
+    });
+  }
+  loadOnBackground() {
+    return __async(this, null, function* () {
+      let promises = this.toLoadOnBackgrund.map((src) => {
+        return this.mapTypeAndLoad(src);
+      });
+      return new Promise((resolve, reject) => {
+        Promise.all(promises).then(() => resolve()).catch((error) => reject(error));
+      });
+    });
+  }
+  mapTypeAndLoad(src) {
+    var _a;
+    const fileExtension = (_a = src.split(".").pop()) == null ? void 0 : _a.toLowerCase();
+    switch (fileExtension) {
+      case "css":
+        return this.loadCss(src);
+      case "js":
+        return this.loadScript(src);
+      default:
+        throw new Error(`Unsupported file type: ${fileExtension}`);
+    }
+  }
+  // Append to head
+  loadCss(src) {
     return __async(this, null, function* () {
       const cssLink = document.createElement("link");
       cssLink.rel = "stylesheet";
-      cssLink.href = path;
+      cssLink.href = src;
       cssLink.crossOrigin = "anonymous";
       cssLink.referrerPolicy = "no-referrer";
       document.head.appendChild(cssLink);
@@ -155,14 +191,11 @@ var Alpha = class extends Composer {
       });
     });
   }
-  /**
-  * Load script async
-  */
-  loadScript(path) {
+  loadScript(src) {
     return __async(this, null, function* () {
       return new Promise((resolve, reject) => {
         const script = document.createElement("script");
-        script.src = path;
+        script.src = src;
         script.defer = true;
         script.onload = () => {
           resolve();
@@ -174,6 +207,73 @@ var Alpha = class extends Composer {
       });
     });
   }
+};
+
+// src/loaders/LoaderAlpha.ts
+var LoaderAlpha = class _LoaderAlpha extends Loader {
+  constructor(query) {
+    super();
+    this.element = null;
+    this.infoAlert = null;
+    this.infoStatus = null;
+    this.element = document.querySelector(query);
+    if (!this.element) {
+      throw new Error(`Element with query "${query}" not found`);
+    }
+    this.infoAlert = this.element.querySelector("#info-alert");
+    if (!this.infoAlert) {
+      throw new Error('Element with id "info-alert" not found');
+    }
+    this.infoStatus = this.element.querySelector("#info-status");
+    if (!this.infoStatus) {
+      throw new Error('Element with id "info-status" not found');
+    }
+  }
+  load() {
+    return __async(this, null, function* () {
+      return __superGet(_LoaderAlpha.prototype, this, "load").call(this).then(() => {
+        if (this.infoAlert) this.infoAlert.textContent = "Assets loaded";
+        setTimeout(() => {
+          this.hideElement();
+        }, 2e3);
+      });
+    });
+  }
+  hideElement() {
+    var _a;
+    console.log("hideElement");
+    (_a = this.element) == null ? void 0 : _a.classList.add("pop-out");
+  }
+};
+
+// src/loaders/index.ts
+var Loaders = {
+  LoaderAlpha(query) {
+    return new LoaderAlpha(query);
+  }
+};
+
+// src/composers/Alpha.ts
+var Alpha = class extends Composer {
+  /**
+   * Start everything
+   */
+  start() {
+    const loader = Loaders.LoaderAlpha("#loader");
+    loader.setToLoad("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+    loader.setToLoad("https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css");
+    loader.setToLoad("/assets/styles/generic.css");
+    loader.setToLoad("https://code.jquery.com/jquery-3.6.0.min.js");
+    loader.setToLoad("https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js");
+    this.game.getAssetsToLoad().forEach((asset) => {
+      loader.setToLoad(asset);
+    });
+    loader.load().then(() => {
+      this.layoutButtons();
+    }).catch((error) => {
+      console.error("Failed to load resources:", error);
+    });
+  }
   layoutButtons() {
     let buttonsOrder = [HomeButton];
     buttonsOrder.forEach((ButtonType) => {
@@ -182,9 +282,6 @@ var Alpha = class extends Composer {
         this.topLeft.appendChild(button.getHTMLElement());
       }
     });
-  }
-  onGameReady() {
-    throw new Error("Method not implemented.");
   }
   constructor(game) {
     super(game);
@@ -271,6 +368,9 @@ var Buttons = {
 
 // tests/templates/starter.v1/src/SampleGame.ts
 var SampleGame = class extends Game {
+  getAssetsToLoad() {
+    return [];
+  }
   init() {
     throw new Error("Method not implemented.");
   }

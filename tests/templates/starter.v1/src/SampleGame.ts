@@ -1,6 +1,9 @@
 import * as  Mv from "../../../../src/Mv";
 
 export default class SampleGame extends Mv.Game {
+    getAssetsToLoad(): string[] {
+        return [];
+    }
     init(): void {
         throw new Error('Method not implemented.');
 

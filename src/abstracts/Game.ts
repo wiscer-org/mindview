@@ -16,6 +16,11 @@ export abstract class Game {
     abstract pause(): void;
     abstract resume(): void;
     abstract end(): void;
+    /**
+     * Get all assets to load, to be loaded by Loader.
+     * @returns List of assets to load
+     */
+    abstract getAssetsToLoad(): string[];
 
     getState(): string {
         return this.state;

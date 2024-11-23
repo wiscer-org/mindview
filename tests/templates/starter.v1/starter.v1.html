@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/assets/images/icons8-favicon-32.png">
-    <title>Application Name</title>
+    <title>Starter v1 App</title>
     <style id="starter-style">
         body {
             margin: 0;
@@ -132,12 +132,12 @@
 </head>
 
 <body>
-    <div class="mv-modal" tabindex="-1" role="status">
-        <h1>App Name</h1>
+    <div id="loader" class="mv-modal" tabindex="-1" role="status">
+        <h1>Starter v1 App</h1>
         <div class="spinner" aria-label="Loading image" aria-hidden="true"></div>
-        <div id="info-alert" role="alert">loading assets</div>
-        <div id="info-status" role="status">
-        </div>
+        <!-- IMPORTANT: DO NOT REMOVE &nbsp; before "loading assets", to allow screen reader to 'loading assets' -->
+        <div id="info-alert" role="alert">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loading assets</div>
+        <div id="info-status" role="status"></div>
     </div>
 
     <script>
