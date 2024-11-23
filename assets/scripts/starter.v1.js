@@ -45,7 +45,7 @@ var Composer = class {
     this.topLeft.classList.add("left");
     this.topRight = this.createCornerContainer();
     this.topRight.classList.add("top");
-    this.topLeft.classList.add("right");
+    this.topRight.classList.add("right");
     this.bottomLeft = this.createCornerContainer();
     this.bottomLeft.classList.add("bottom");
     this.bottomLeft.classList.add("left");
