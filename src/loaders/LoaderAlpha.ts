@@ -27,11 +27,11 @@ export class LoaderAlpha extends Loader {
         return super.load()
             .then(() => {
                 // Set the text, notify loading has finished
-                if (this.infoAlert) this.infoAlert.textContent = 'Assets loaded';
 
                 // Wait a bit before hiding
                 setTimeout(() => {
                     // Hide the loader HTML element after resources are loaded;
+                    console.log('hide loader element');
                     this.hideElement();
                 }, 1500);
             });

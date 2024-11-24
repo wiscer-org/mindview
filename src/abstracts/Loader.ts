@@ -16,8 +16,10 @@ export abstract class Loader {
         });
         return new Promise((resolve, reject) => {
             Promise.all(promises)
-                .then(() => resolve())
-                .catch((error) => reject(error));
+                .then(() => {
+                    resolve();
+                    console.log('Resolve: all assets are loaded');
+                }).catch((error) => reject(error));
         })
     }
 

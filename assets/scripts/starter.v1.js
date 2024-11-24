@@ -149,7 +149,10 @@ var Loader = class {
         return this.mapTypeAndLoad(src);
       });
       return new Promise((resolve, reject) => {
-        Promise.all(promises).then(() => resolve()).catch((error) => reject(error));
+        Promise.all(promises).then(() => {
+          resolve();
+          console.log("Resolve: all assets are loaded");
+        }).catch((error) => reject(error));
       });
     });
   }
@@ -232,8 +235,8 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
   load() {
     return __async(this, null, function* () {
       return __superGet(_LoaderAlpha.prototype, this, "load").call(this).then(() => {
-        if (this.infoAlert) this.infoAlert.textContent = "Assets loaded";
         setTimeout(() => {
+          console.log("hide loader element");
           this.hideElement();
         }, 1500);
       });
@@ -266,6 +269,34 @@ var InfoButton = class extends Button {
   }
 };
 
+// src/buttons/Result.ts
+var ResultButton = class extends Button {
+  constructor() {
+    super("", "fa-check-circle", {
+      id: "result-button",
+      ariaLabel: "Show result"
+    });
+    this.element.onclick = () => this.onClick();
+  }
+  onClick() {
+    console.log("Result clicked");
+  }
+};
+
+// src/buttons/Refresh.ts
+var RefreshButton = class extends Button {
+  constructor() {
+    super("Refresh", "fa-sync", {
+      id: "refresh-button",
+      ariaLabel: "Refresh page"
+    });
+    this.element.onclick = () => this.onClick();
+  }
+  onClick() {
+    window.location.reload();
+  }
+};
+
 // src/composers/Alpha.ts
 var Alpha = class extends Composer {
   /**
@@ -290,17 +321,15 @@ var Alpha = class extends Composer {
   }
   layoutButtons() {
     return __async(this, null, function* () {
-      let buttonsOrder = [HomeButton, InfoButton];
-      buttonsOrder.forEach((ButtonType) => __async(this, null, function* () {
+      let buttonsOrder = [HomeButton, InfoButton, RefreshButton, ResultButton];
+      for (const ButtonType of buttonsOrder) {
         const button = this.buttons.find((b) => b instanceof ButtonType);
         if (button) {
           this.topLeft.appendChild(button.getHTMLElement());
+          button.getHTMLElement().classList.add("pop-in");
+          yield new Promise((resolve) => setTimeout(resolve, 100));
         }
-        button == null ? void 0 : button.getHTMLElement().classList.add("pop-in");
-      }));
-      setTimeout(() => {
-        this.topLeft.classList.remove("pop-in");
-      }, 2e3);
+      }
     });
   }
   constructor(game) {
@@ -345,20 +374,6 @@ var Composers = {
   }
 };
 
-// src/buttons/Refresh.ts
-var RefreshButton = class extends Button {
-  constructor() {
-    super("Refresh", "fa-sync", {
-      id: "refresh-button",
-      ariaLabel: "Refresh page"
-    });
-    this.element.onclick = () => this.onClick();
-  }
-  onClick() {
-    window.location.reload();
-  }
-};
-
 // src/buttons/index.ts
 var Buttons = {
   home() {
@@ -369,6 +384,9 @@ var Buttons = {
   },
   info() {
     return new InfoButton();
+  },
+  result() {
+    return new ResultButton();
   }
 };
 
@@ -403,5 +421,6 @@ document.addEventListener("DOMContentLoaded", function() {
   let composer = Composers.Alpha(mvGame);
   composer.addButton(Buttons.home());
   composer.addButton(Buttons.info());
+  composer.addButton(Buttons.result());
   composer.start();
 });

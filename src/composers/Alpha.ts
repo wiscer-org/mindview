@@ -4,6 +4,8 @@ import { Button } from '../abstracts/Button';
 import { HomeButton } from '../buttons/Home';
 import { Loaders } from '../loaders';
 import { InfoButton } from '../buttons/Info';
+import { ResultButton } from '../buttons/Result';
+import { RefreshButton } from '../buttons/Refresh';
 
 export class Alpha extends Composer {
     /**
@@ -39,28 +41,25 @@ export class Alpha extends Composer {
 
     async layoutButtons() {
         // Buttons order
-        let buttonsOrder = [HomeButton, InfoButton];
-        buttonsOrder.forEach(async ButtonType => {
+        let buttonsOrder = [HomeButton, InfoButton, RefreshButton, ResultButton];
+        for (const ButtonType of buttonsOrder) {
             const button = this.buttons.find(b => b instanceof ButtonType);
             if (button) {
                 this.topLeft.appendChild(button.getHTMLElement());
+                button.getHTMLElement().classList.add('pop-in');
+
+                // Wait a little for animation effect
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
-            // Add class `pop-in` to button
-            button?.getHTMLElement().classList.add('pop-in');
-
-            // Wait for animation to finish
-            // await new Promise(resolve => {
-            //     button?.getHTMLElement().addEventListener('animationend', () => {
-            //         resolve(true);
-            //     });
-            // });
-
-        });
+        }
+        // setTimeout(() => {
+        //     this.topLeft.classList.remove('pop-in');
+        // }, 2000);
 
         // Remove `pop-in` class after a few moments
-        setTimeout(() => {
-            this.topLeft.classList.remove('pop-in');
-        }, 2000);
+        // setTimeout(() => {
+        //     this.topLeft.classList.remove('pop-in');
+        // }, 2000);
     }
 
     constructor(game: Game) {
