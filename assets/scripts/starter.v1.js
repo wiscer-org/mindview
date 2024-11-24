@@ -235,13 +235,12 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
         if (this.infoAlert) this.infoAlert.textContent = "Assets loaded";
         setTimeout(() => {
           this.hideElement();
-        }, 2e3);
+        }, 1500);
       });
     });
   }
   hideElement() {
     var _a;
-    console.log("hideElement");
     (_a = this.element) == null ? void 0 : _a.classList.add("pop-out");
   }
 };
@@ -250,6 +249,20 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
 var Loaders = {
   LoaderAlpha(query) {
     return new LoaderAlpha(query);
+  }
+};
+
+// src/buttons/Info.ts
+var InfoButton = class extends Button {
+  constructor() {
+    super("", "fa-info-circle", {
+      id: "info-button",
+      ariaLabel: "Show information"
+    });
+    this.element.onclick = () => this.onClick();
+  }
+  onClick() {
+    console.log("Info clicked");
   }
 };
 
@@ -270,17 +283,24 @@ var Alpha = class extends Composer {
     });
     loader.load().then(() => {
       this.layoutButtons();
+      this.game.start();
     }).catch((error) => {
       console.error("Failed to load resources:", error);
     });
   }
   layoutButtons() {
-    let buttonsOrder = [HomeButton];
-    buttonsOrder.forEach((ButtonType) => {
-      const button = this.buttons.find((b) => b instanceof ButtonType);
-      if (button) {
-        this.topLeft.appendChild(button.getHTMLElement());
-      }
+    return __async(this, null, function* () {
+      let buttonsOrder = [HomeButton, InfoButton];
+      buttonsOrder.forEach((ButtonType) => __async(this, null, function* () {
+        const button = this.buttons.find((b) => b instanceof ButtonType);
+        if (button) {
+          this.topLeft.appendChild(button.getHTMLElement());
+        }
+        button == null ? void 0 : button.getHTMLElement().classList.add("pop-in");
+      }));
+      setTimeout(() => {
+        this.topLeft.classList.remove("pop-in");
+      }, 2e3);
     });
   }
   constructor(game) {
@@ -339,20 +359,6 @@ var RefreshButton = class extends Button {
   }
 };
 
-// src/buttons/Info.ts
-var InfoButton = class extends Button {
-  constructor() {
-    super("Info", "fa-info-circle", {
-      id: "info-button",
-      ariaLabel: "Show information"
-    });
-    this.element.onclick = () => this.onClick();
-  }
-  onClick() {
-    console.log("Info clicked");
-  }
-};
-
 // src/buttons/index.ts
 var Buttons = {
   home() {
@@ -374,8 +380,11 @@ var SampleGame = class extends Game {
   init() {
     throw new Error("Method not implemented.");
   }
+  /**
+   * Start everything, take over whole control. Different meaning than `pl`
+   */
   start() {
-    throw new Error("Method not implemented.");
+    console.log("Sample Game started");
   }
   pause() {
     throw new Error("Method not implemented.");

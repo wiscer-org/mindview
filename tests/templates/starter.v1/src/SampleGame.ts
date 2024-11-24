@@ -7,14 +7,12 @@ export default class SampleGame extends Mv.Game {
     init(): void {
         throw new Error('Method not implemented.');
 
-        // TODO: Load assets
-
-        // Tell `Mv.Composer` instance that tthis game is ready
-
     }
-
+    /**
+     * Start everything, take over whole control. Different meaning than `pl`
+     */
     start(): void {
-        throw new Error('Method not implemented.');
+        console.log("Sample Game started");
     }
     pause(): void {
         throw new Error('Method not implemented.');

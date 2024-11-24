@@ -33,11 +33,10 @@ export class LoaderAlpha extends Loader {
                 setTimeout(() => {
                     // Hide the loader HTML element after resources are loaded;
                     this.hideElement();
-                }, 2000);
+                }, 1500);
             });
     }
     hideElement() {
-        console.log('hideElement');
         this.element?.classList.add('pop-out');
     }
 }

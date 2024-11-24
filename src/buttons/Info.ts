@@ -3,7 +3,7 @@ import * as Mv from '../Mv';
 
 export class InfoButton extends Mv.Button {
     constructor() {
-        super('Info', 'fa-info-circle', {
+        super('', 'fa-info-circle', {
             id: 'info-button',
             ariaLabel: 'Show information'
         });
