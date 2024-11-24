@@ -2,6 +2,7 @@ import { Button } from '../abstracts/Button';
 import { HomeButton } from './Home';
 import { RefreshButton } from './Refresh';
 import { InfoButton } from './Info';
+import { ResultButton } from './Result';
 
 export const Buttons = {
     home(): HomeButton {
@@ -12,5 +13,8 @@ export const Buttons = {
     },
     info(): InfoButton {
         return new InfoButton();
+    },
+    result(): ResultButton {
+        return new ResultButton();
     }
 } as const;
