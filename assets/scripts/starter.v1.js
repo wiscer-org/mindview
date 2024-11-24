@@ -235,10 +235,12 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
   load() {
     return __async(this, null, function* () {
       return __superGet(_LoaderAlpha.prototype, this, "load").call(this).then(() => {
+        var _a;
+        ((_a = this.infoAlert) == null ? void 0 : _a.textContent) ? this.infoAlert.textContent = "assets loaded" : null;
         setTimeout(() => {
           console.log("hide loader element");
           this.hideElement();
-        }, 1500);
+        }, 700);
       });
     });
   }

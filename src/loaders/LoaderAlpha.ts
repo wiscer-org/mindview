@@ -19,7 +19,6 @@ export class LoaderAlpha extends Loader {
         if (!this.infoStatus) {
             throw new Error('Element with id "info-status" not found');
         }
-
     }
 
     async load(): Promise<void> {
@@ -27,13 +26,14 @@ export class LoaderAlpha extends Loader {
         return super.load()
             .then(() => {
                 // Set the text, notify loading has finished
+                this.infoAlert?.textContent ? this.infoAlert.textContent = 'assets loaded' : null;
 
                 // Wait a bit before hiding
                 setTimeout(() => {
                     // Hide the loader HTML element after resources are loaded;
                     console.log('hide loader element');
                     this.hideElement();
-                }, 1500);
+                }, 700);
             });
     }
     hideElement() {
