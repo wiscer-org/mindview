@@ -1,15 +1,11 @@
 import * as Mv from '../Mv';
 
 export class RefreshButton extends Mv.Button {
-    constructor() {
+    constructor(attrs: Mv.ButtonAttributes) {
         super('Refresh', 'fa-sync', {
             id: 'refresh-button',
-            ariaLabel: 'Refresh page'
+            ariaLabel: 'Refresh page',
+            ...attrs
         });
-        this.element.onclick = () => this.onClick();
-    }
-
-    onClick(): void {
-        window.location.reload();
     }
 }

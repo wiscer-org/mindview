@@ -1,10 +1,12 @@
+export type ButtonAttributes = (Partial<HTMLButtonElement> | Partial<HTMLAnchorElement>) & { onclick: () => void };
+
 export abstract class Button {
     protected element: HTMLElement;
 
     constructor(
         protected text: string,
         protected fontAwesomeIcon: string = '',
-        attrs: Partial<HTMLButtonElement> | Partial<HTMLAnchorElement> = {}
+        attrs: ButtonAttributes = { onclick: () => 0 }
     ) {
         this.element = document.createElement('button');
         this.element.textContent = text;
@@ -14,7 +16,6 @@ export abstract class Button {
 
         // Add basic attributes
         this.element.className = 'button';
-        // this.element.onclick = this.onClick.bind(this);
 
         // Add FontAwesome icon if provided
         if (fontAwesomeIcon) {
@@ -23,8 +24,6 @@ export abstract class Button {
             this.element.insertBefore(iconElement, this.element.firstChild);
         }
     }
-
-    abstract onClick(): void;
 
     getHTMLElement(): HTMLElement {
         return this.element;

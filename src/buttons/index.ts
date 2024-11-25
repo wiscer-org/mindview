@@ -1,4 +1,4 @@
-import { Button } from '../abstracts/Button';
+import { Button, ButtonAttributes } from '../abstracts/Button';
 import { HomeButton } from './Home';
 import { RefreshButton } from './Refresh';
 import { InfoButton } from './Info';
@@ -8,13 +8,13 @@ export const Buttons = {
     home(): HomeButton {
         return new HomeButton();
     },
-    refresh(): RefreshButton {
-        return new RefreshButton();
+    refresh(attrs: ButtonAttributes): RefreshButton {
+        return new RefreshButton(attrs);
     },
-    info(): InfoButton {
-        return new InfoButton();
+    info(attrs: ButtonAttributes): InfoButton {
+        return new InfoButton(attrs);
     },
-    result(): ResultButton {
-        return new ResultButton();
+    result(attrs: ButtonAttributes): ResultButton {
+        return new ResultButton(attrs);
     }
 } as const;

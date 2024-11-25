@@ -5,9 +5,9 @@ export class HomeButton extends Button {
         // No label
         super('', 'fa-home', {
             id: 'home-button',
-            'ariaLabel': 'MindView home'
+            'ariaLabel': 'MindView home',
+            onclick: () => this.onClick,
         });
-        this.element.onclick = () => this.onClick();
     }
 
     onClick(): void {

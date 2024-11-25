@@ -2,16 +2,15 @@ import * as Mv from '../Mv';
 
 
 export class InfoButton extends Mv.Button {
-    constructor() {
-        super('', 'fa-info-circle', {
+
+    constructor(attrs: Mv.ButtonAttributes) {
+        const newAttrs: Mv.ButtonAttributes = {
             id: 'info-button',
-            ariaLabel: 'Show information'
-        });
-        this.element.onclick = () => this.onClick();
+            ariaLabel: 'Show information',
+            ...attrs,
+        };
+
+        super('', 'fa-info-circle', newAttrs);
     }
 
-    onClick(): void {
-        // Implement info modal functionality
-        console.log('Info clicked');
-    }
 }

@@ -1,5 +1,5 @@
 export { Composer } from './abstracts/Composer';
-export { Button } from './abstracts/Button';
+export { Button, ButtonAttributes } from './abstracts/Button';
 export { Game } from './abstracts/Game';
 export { Composers } from './composers';
 export { Buttons } from './buttons';

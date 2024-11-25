@@ -2,27 +2,33 @@ document
     .addEventListener('DOMContentLoaded', () => {
         let game = new RandomColor();
 
-        console.log("Hello World");
     });
 
 
+import { InfoButton } from '../../src/buttons/Info';
 import * as Mv from '../../src/Mv'
 class RandomColor extends Mv.Game {
     // Define colors to be shuffled
     static colors: string[] = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "gray", "black", "white"];
 
     constructor() {
-        console.log('at constructor');
         super();
 
         this.composer = Mv.Composers.Alpha(this);
 
+        // Set up buttons
+        let infoButton = Mv.Buttons.info({
+            onclick: this.infoButtonOnClick.bind(this)
+        });
+        let resultButton = Mv.Buttons.result({
+            onclick: this.resultButtonOnClick.bind(this)
+        });
+
         this.composer.addButton(Mv.Buttons.home());
-        this.composer.addButton(Mv.Buttons.info());
-        this.composer.addButton(Mv.Buttons.result());
+        this.composer.addButton(infoButton);
+        this.composer.addButton(resultButton);
 
         this.composer.start();
-        console.log('finish constructor')
     }
     init(): void {
         throw new Error('Method init not implemented.');
@@ -42,5 +48,10 @@ class RandomColor extends Mv.Game {
     getAssetsToLoad(): string[] {
         return []
     }
-
+    infoButtonOnClick(): void {
+        throw new Error('Method InfoButtonOnClick not implemented.');
+    }
+    resultButtonOnClick(): void {
+        throw new Error('Method resultButtonOnClick not implemented.');
+    }
 }

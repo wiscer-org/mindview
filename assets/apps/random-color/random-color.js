@@ -1,6 +1,22 @@
 "use strict";
+var __defProp = Object.defineProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
 var __reflectGet = Reflect.get;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
 var __superGet = (cls, obj, key) => __reflectGet(__getProtoOf(cls), key, obj);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -67,7 +83,7 @@ var Composer = class {
 
 // src/abstracts/Button.ts
 var Button = class {
-  constructor(text, fontAwesomeIcon = "", attrs = {}) {
+  constructor(text, fontAwesomeIcon = "", attrs = { onclick: () => 0 }) {
     this.text = text;
     this.fontAwesomeIcon = fontAwesomeIcon;
     this.element = document.createElement("button");
@@ -122,9 +138,9 @@ var HomeButton = class extends Button {
   constructor() {
     super("", "fa-home", {
       id: "home-button",
-      "ariaLabel": "MindView home"
+      "ariaLabel": "MindView home",
+      onclick: () => this.onClick
     });
-    this.element.onclick = () => this.onClick();
   }
   onClick() {
     window.location.href = "/";
@@ -259,43 +275,32 @@ var Loaders = {
 
 // src/buttons/Info.ts
 var InfoButton = class extends Button {
-  constructor() {
-    super("", "fa-info-circle", {
+  constructor(attrs) {
+    const newAttrs = __spreadValues({
       id: "info-button",
       ariaLabel: "Show information"
-    });
-    this.element.onclick = () => this.onClick();
-  }
-  onClick() {
-    console.log("Info clicked");
+    }, attrs);
+    super("", "fa-info-circle", newAttrs);
   }
 };
 
 // src/buttons/Result.ts
 var ResultButton = class extends Button {
-  constructor() {
-    super("", "fa-check-circle", {
+  constructor(attrs) {
+    super("", "fa-check-circle", __spreadValues({
       id: "result-button",
       ariaLabel: "Show result"
-    });
-    this.element.onclick = () => this.onClick();
-  }
-  onClick() {
-    console.log("Result clicked");
+    }, attrs));
   }
 };
 
 // src/buttons/Refresh.ts
 var RefreshButton = class extends Button {
-  constructor() {
-    super("Refresh", "fa-sync", {
+  constructor(attrs) {
+    super("Refresh", "fa-sync", __spreadValues({
       id: "refresh-button",
       ariaLabel: "Refresh page"
-    });
-    this.element.onclick = () => this.onClick();
-  }
-  onClick() {
-    window.location.reload();
+    }, attrs));
   }
 };
 
@@ -384,32 +389,35 @@ var Buttons = {
   home() {
     return new HomeButton();
   },
-  refresh() {
-    return new RefreshButton();
+  refresh(attrs) {
+    return new RefreshButton(attrs);
   },
-  info() {
-    return new InfoButton();
+  info(attrs) {
+    return new InfoButton(attrs);
   },
-  result() {
-    return new ResultButton();
+  result(attrs) {
+    return new ResultButton(attrs);
   }
 };
 
 // random-color/src/random-color.ts
 document.addEventListener("DOMContentLoaded", () => {
   let game = new RandomColor();
-  console.log("Hello World");
 });
 var RandomColor = class extends Game {
   constructor() {
-    console.log("at constructor");
     super();
     this.composer = Composers.Alpha(this);
+    let infoButton = Buttons.info({
+      onclick: this.infoButtonOnClick.bind(this)
+    });
+    let resultButton = Buttons.result({
+      onclick: this.resultButtonOnClick.bind(this)
+    });
     this.composer.addButton(Buttons.home());
-    this.composer.addButton(Buttons.info());
-    this.composer.addButton(Buttons.result());
+    this.composer.addButton(infoButton);
+    this.composer.addButton(resultButton);
     this.composer.start();
-    console.log("finish constructor");
   }
   init() {
     throw new Error("Method init not implemented.");
@@ -427,6 +435,12 @@ var RandomColor = class extends Game {
   }
   getAssetsToLoad() {
     return [];
+  }
+  infoButtonOnClick() {
+    throw new Error("Method InfoButtonOnClick not implemented.");
+  }
+  resultButtonOnClick() {
+    throw new Error("Method resultButtonOnClick not implemented.");
   }
 };
 // Define colors to be shuffled

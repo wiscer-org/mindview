@@ -1,16 +1,11 @@
 import * as Mv from '../Mv';
 
 export class ResultButton extends Mv.Button {
-    constructor() {
+    constructor(attrs: Mv.ButtonAttributes) {
         super('', 'fa-check-circle', {
             id: 'result-button',
-            ariaLabel: 'Show result'
+            ariaLabel: 'Show result',
+            ...attrs
         });
-        this.element.onclick = () => this.onClick();
-    }
-
-    onClick(): void {
-        // Implement result functionality
-        console.log('Result clicked');
     }
 }
