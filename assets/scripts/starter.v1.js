@@ -330,6 +330,9 @@ var Alpha = class extends Composer {
           this.topLeft.appendChild(button.getHTMLElement());
           button.getHTMLElement().classList.add("pop-in");
           yield new Promise((resolve) => setTimeout(resolve, 100));
+          setTimeout(() => {
+            button.getHTMLElement().classList.remove("pop-in");
+          }, 2e3);
         }
       }
     });

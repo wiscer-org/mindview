@@ -17,13 +17,10 @@ body {
 .f-c {
     position: fixed;
     display: flex;
-    /* align-items: center; */
-    /* align-content: center; */
     margin: 0;
     padding: 0px;
     gap: 14px;
     z-index: 100;
-    border: 2px solid black;
     font-size: 40px;
     height: 58px;
     line-height: 1;

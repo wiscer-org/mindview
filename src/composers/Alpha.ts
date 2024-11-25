@@ -50,16 +50,14 @@ export class Alpha extends Composer {
 
                 // Wait a little for animation effect
                 await new Promise(resolve => setTimeout(resolve, 100));
+
+                // Remove pop-in class after 2 seconds
+                setTimeout(() => {
+                    button.getHTMLElement().classList.remove('pop-in');
+                }, 2000);
+
             }
         }
-        // setTimeout(() => {
-        //     this.topLeft.classList.remove('pop-in');
-        // }, 2000);
-
-        // Remove `pop-in` class after a few moments
-        // setTimeout(() => {
-        //     this.topLeft.classList.remove('pop-in');
-        // }, 2000);
     }
 
     constructor(game: Game) {
