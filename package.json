@@ -7,8 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "build:random-color-simple": "esbuild ./random-color-simple/src/random-color-simple.ts --bundle --outdir=./random-color-simple/dist --platform=node --target=es6",
-    "live:random-color-simple": "esbuild ./random-color-simple/src/random-color-simple.ts --bundle --outdir=./random-color-simple/dist --platform=node --target=es6 --watch",
+    "build:random-color-simple": "esbuild ./random-color-simple/src/random-color-simple.ts --bundle --outdir=./assets/scripts/  --platform=node --target=es6",
+    "live:random-color-simple": "esbuild ./random-color-simple/src/random-color-simple.ts --bundle --outdir=./assets/scripts/ --platform=node --target=es6 --watch",
+    "live:random-color": "esbuild ./random-color/src/random-color.ts --bundle --outdir=./assets/apps/random-color/ --platform=node --target=es6 --watch",
     "build:tests_templates_starter.v1": "esbuild ./tests/templates/starter.v1/src/starter.v1.ts --bundle --outdir=./assets/scripts/ --platform=node --target=es6",
     "live:tests_templates_starter.v1": "esbuild ./tests/templates/starter.v1/src/starter.v1.ts --bundle --outdir=./assets/scripts/ --platform=node --target=es6 --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
