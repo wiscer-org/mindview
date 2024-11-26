@@ -5,15 +5,16 @@ document
     });
 
 
-import { InfoButton } from '../../src/buttons/Info';
 import * as Mv from '../../src/Mv'
 class RandomColor extends Mv.Game {
     // Define colors to be shuffled
     static colors: string[] = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "gray", "black", "white"];
+    infoModal: Mv.Modal;
 
     constructor() {
         super();
 
+        // Init composer
         this.composer = Mv.Composers.Alpha(this);
 
         // Set up buttons
@@ -29,12 +30,19 @@ class RandomColor extends Mv.Game {
         this.composer.addButton(resultButton);
 
         this.composer.start();
+
+        // Init modal component here
+        this.infoModal = Mv.Modals.alpha({
+            title: 'Random Color',
+            content: '<p>Guess the color on the screen.</p><p>Activate screen reader,  and click on the "Result" button to know the current color.</p>'
+        });
     }
     init(): void {
         throw new Error('Method init not implemented.');
     }
     start(): void {
         // Start game now
+        this.infoModal.show();
     }
     pause(): void {
         throw new Error('Method pause not implemented.');

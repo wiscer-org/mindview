@@ -23,20 +23,29 @@ export class LoaderAlpha extends Loader {
 
     async load(): Promise<void> {
 
-        return super.load()
-            .then(() => {
-                // Set the text, notify loading has finished
-                this.infoAlert?.textContent ? this.infoAlert.textContent = 'assets loaded' : null;
+        await super.load()
 
-                // Wait a bit before hiding
-                setTimeout(() => {
-                    // Hide the loader HTML element after resources are loaded;
-                    console.log('hide loader element');
-                    this.hideElement();
-                }, 700);
-            });
+        // Set the text, notify loading has finished
+        this.infoAlert?.textContent ? this.infoAlert.textContent = 'assets loaded' : null;
+
+        // Wait a bit before hiding
+        await new Promise<void>((r) => setTimeout(r, 400));
+
+        // Hide and wait the loader HTML element after resources are loaded;
+        await this.hideElement();
     }
-    hideElement() {
-        this.element?.classList.add('pop-out');
+    async hideElement() {
+        return new Promise<void>((resolve) => {
+
+            if (this.element) {
+                this.element.classList.add('pop-out');
+                // Wait until animation ends
+                this.element.addEventListener("animationend", () => {
+                    resolve();
+                });
+            } else {
+                resolve()
+            }
+        });
     }
 }

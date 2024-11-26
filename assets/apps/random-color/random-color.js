@@ -133,6 +133,69 @@ var Game = class {
   }
 };
 
+// src/abstracts/Modal.ts
+var Modal = class {
+  constructor(attrs = {}) {
+    this.element = document.createElement("div");
+    this.overlay = document.createElement("div");
+    this.contentElement = document.createElement("div");
+    this.titleElement = document.createElement("h1");
+    this.closeButton = document.createElement("button");
+    this.overlay.className = "modal-overlay";
+    this.overlay.onclick = (e) => {
+      if (e.target === this.overlay) {
+        this.close();
+      }
+    };
+    this.element.className = "modal";
+    Object.assign(this.element, attrs);
+    this.titleElement.className = "modal-title";
+    if (attrs.title) {
+      this.titleElement.textContent = attrs.title;
+    }
+    this.closeButton.className = "modal-close";
+    this.closeButton.innerHTML = "&times;";
+    this.closeButton.onclick = () => this.close();
+    this.contentElement.className = "modal-content";
+    if (attrs.content) {
+      this.contentElement.innerHTML = attrs.content;
+    }
+    this.element.appendChild(this.titleElement);
+    this.element.appendChild(this.closeButton);
+    this.element.appendChild(this.contentElement);
+  }
+  show() {
+    document.body.appendChild(this.overlay);
+    document.body.appendChild(this.element);
+    setTimeout(() => {
+      this.overlay.classList.add("visible");
+      this.element.classList.add("visible");
+    }, 10);
+  }
+  close() {
+    this.overlay.classList.remove("visible");
+    this.element.classList.remove("visible");
+    setTimeout(() => {
+      this.overlay.remove();
+      this.element.remove();
+    }, 300);
+  }
+  setContent(content) {
+    this.contentElement.innerHTML = content;
+  }
+  setTitle(title) {
+    this.titleElement.textContent = title;
+  }
+  getElement() {
+    return this.element;
+  }
+  destroy() {
+    this.close();
+    this.overlay.onclick = null;
+    this.closeButton.onclick = null;
+  }
+};
+
 // src/buttons/Home.ts
 var HomeButton = class extends Button {
   constructor() {
@@ -167,7 +230,6 @@ var Loader = class {
       return new Promise((resolve, reject) => {
         Promise.all(promises).then(() => {
           resolve();
-          console.log("Resolve: all assets are loaded");
         }).catch((error) => reject(error));
       });
     });
@@ -250,19 +312,26 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
   }
   load() {
     return __async(this, null, function* () {
-      return __superGet(_LoaderAlpha.prototype, this, "load").call(this).then(() => {
-        var _a;
-        ((_a = this.infoAlert) == null ? void 0 : _a.textContent) ? this.infoAlert.textContent = "assets loaded" : null;
-        setTimeout(() => {
-          console.log("hide loader element");
-          this.hideElement();
-        }, 700);
-      });
+      var _a;
+      yield __superGet(_LoaderAlpha.prototype, this, "load").call(this);
+      ((_a = this.infoAlert) == null ? void 0 : _a.textContent) ? this.infoAlert.textContent = "assets loaded" : null;
+      yield new Promise((r) => setTimeout(r, 400));
+      yield this.hideElement();
     });
   }
   hideElement() {
-    var _a;
-    (_a = this.element) == null ? void 0 : _a.classList.add("pop-out");
+    return __async(this, null, function* () {
+      return new Promise((resolve) => {
+        if (this.element) {
+          this.element.classList.add("pop-out");
+          this.element.addEventListener("animationend", () => {
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 };
 
@@ -400,6 +469,24 @@ var Buttons = {
   }
 };
 
+// src/modals/Alpha.ts
+var ModalAlpha = class extends Modal {
+  constructor(attrs = {}) {
+    const defaultAttrs = __spreadValues({
+      title: "Information",
+      className: "modal-alpha"
+    }, attrs);
+    super(defaultAttrs);
+  }
+};
+
+// src/modals/index.ts
+var Modals = {
+  alpha(attrs = {}) {
+    return new ModalAlpha(attrs);
+  }
+};
+
 // random-color/src/random-color.ts
 document.addEventListener("DOMContentLoaded", () => {
   let game = new RandomColor();
@@ -418,11 +505,16 @@ var RandomColor = class extends Game {
     this.composer.addButton(infoButton);
     this.composer.addButton(resultButton);
     this.composer.start();
+    this.infoModal = Modals.alpha({
+      title: "Random Color",
+      content: '<p>Guess the color on the screen.</p><p>Activate screen reader,  and click on the "Result" button to know the current color.</p>'
+    });
   }
   init() {
     throw new Error("Method init not implemented.");
   }
   start() {
+    this.infoModal.show();
   }
   pause() {
     throw new Error("Method pause not implemented.");
