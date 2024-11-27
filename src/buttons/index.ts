@@ -4,6 +4,8 @@ import { RefreshButton } from './Refresh';
 import { InfoButton } from './Info';
 import { ResultButton } from './Result';
 import { CloseButton } from './Close';
+import { NextButton } from './Next';
+import { HintButton } from './Hint';
 
 export const Buttons = {
     home(): HomeButton {
@@ -21,5 +23,11 @@ export const Buttons = {
     // Close buttons. The click handler will automatically provided based on context, e.g.: in modal.
     close(attrs: ButtonAttributes): CloseButton {
         return new CloseButton(attrs);
+    },
+    next(attrs: ButtonAttributes): NextButton {
+        return new NextButton(attrs);
+    },
+    hint(attrs: ButtonAttributes): HintButton {
+        return new HintButton(attrs);
     }
 } as const;

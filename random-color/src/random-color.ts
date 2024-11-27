@@ -19,10 +19,10 @@ class RandomColor extends Mv.Game {
 
         // Set up buttons
         let infoButton = Mv.Buttons.info({
-            onclick: this.infoButtonOnClick.bind(this)
+            onclick: this.infoButtonOnclick.bind(this)
         });
         let resultButton = Mv.Buttons.result({
-            onclick: this.resultButtonOnClick.bind(this)
+            onclick: this.hintButtonOnclick.bind(this)
         });
 
         this.composer.addButton(Mv.Buttons.home());
@@ -61,10 +61,10 @@ class RandomColor extends Mv.Game {
     getAssetsToLoad(): string[] {
         return []
     }
-    infoButtonOnClick(): void {
-        throw new Error('Method InfoButtonOnClick not implemented.');
+    infoButtonOnclick(): void {
+        this.infoModal.show();
     }
-    resultButtonOnClick(): void {
+    hintButtonOnclick(): void {
         throw new Error('Method resultButtonOnClick not implemented.');
     }
 }

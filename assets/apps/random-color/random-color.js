@@ -501,6 +501,26 @@ var CloseButton = class extends Button {
   }
 };
 
+// src/buttons/Next.ts
+var NextButton = class extends Button {
+  constructor(attrs) {
+    super("Next", "fa-arrow-right", __spreadValues({
+      id: "next-button",
+      "ariaLabel": "Next"
+    }, attrs));
+  }
+};
+
+// src/buttons/Hint.ts
+var HintButton = class extends Button {
+  constructor(attrs) {
+    super("Hint", "fa-lightbulb", __spreadValues({
+      id: "hint-button",
+      "ariaLabel": "Show hint"
+    }, attrs));
+  }
+};
+
 // src/buttons/index.ts
 var Buttons = {
   home() {
@@ -518,6 +538,12 @@ var Buttons = {
   // Close buttons. The click handler will automatically provided based on context, e.g.: in modal.
   close(attrs) {
     return new CloseButton(attrs);
+  },
+  next(attrs) {
+    return new NextButton(attrs);
+  },
+  hint(attrs) {
+    return new HintButton(attrs);
   }
 };
 
@@ -548,10 +574,10 @@ var RandomColor = class extends Game {
     super();
     this.composer = Composers.Alpha(this);
     let infoButton = Buttons.info({
-      onclick: this.infoButtonOnClick.bind(this)
+      onclick: this.infoButtonOnclick.bind(this)
     });
     let resultButton = Buttons.result({
-      onclick: this.resultButtonOnClick.bind(this)
+      onclick: this.hintButtonOnclick.bind(this)
     });
     this.composer.addButton(Buttons.home());
     this.composer.addButton(infoButton);
@@ -583,10 +609,10 @@ var RandomColor = class extends Game {
   getAssetsToLoad() {
     return [];
   }
-  infoButtonOnClick() {
-    throw new Error("Method InfoButtonOnClick not implemented.");
+  infoButtonOnclick() {
+    this.infoModal.show();
   }
-  resultButtonOnClick() {
+  hintButtonOnclick() {
     throw new Error("Method resultButtonOnClick not implemented.");
   }
 };
