@@ -16,8 +16,8 @@ export enum ModalButton {
 export abstract class Modal {
     protected element: HTMLDivElement;
     protected overlay: HTMLDivElement;
-    protected contentElement: HTMLDivElement;
-    protected titleElement: HTMLHeadingElement;
+    public contentElement: HTMLDivElement;
+    public titleElement: HTMLHeadingElement;
     protected closeButton: HTMLButtonElement;
     protected footerElement: HTMLElement;
     protected buttons: Mv.Button[] = [];

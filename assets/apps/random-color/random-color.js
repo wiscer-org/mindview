@@ -1688,18 +1688,28 @@ var _RandomColor = class _RandomColor extends Game {
       onclick: this.infoButtonOnclick.bind(this)
     });
     let resultButton = Buttons.result({
-      onclick: this.hintButtonOnclick.bind(this)
+      onclick: this.resultButtonOnclick.bind(this)
     });
     this.composer.addButton(Buttons.home());
     this.composer.addButton(infoButton);
     this.composer.addButton(resultButton);
     this.composer.start();
     this.initInfoModal();
+    this.initResultModal();
+  }
+  initResultModal() {
+    this.resultModal = Modals.alpha({
+      title: "Current Color",
+      content: this.createResultModalContent()
+    });
+  }
+  createResultModalContent() {
+    return `The current color displayed on screen is ${this.randomColor}.`;
   }
   initInfoModal() {
     this.infoModal = Modals.alpha({
-      title: "Random Color",
-      content: '<p>Guess the color on the screen.</p><p>Activate screen reader,  and click on the "Result" button to know the current color.</p>'
+      title: "Random Color Game",
+      content: '<p>Objective of this game is to guess the color on the screen.</p><p>If screen reader is activated,  click on the "Result" button to let screen reader reads the current color.</p>'
     });
   }
   init() {
@@ -1710,8 +1720,8 @@ var _RandomColor = class _RandomColor extends Game {
     this.newGame();
   }
   newGame() {
-    let randomColor = _RandomColor.colors[Math.floor(Math.random() * _RandomColor.colors.length)];
-    document.body.style.backgroundColor = randomColor;
+    this.randomColor = _RandomColor.colors[Math.floor(Math.random() * _RandomColor.colors.length)];
+    document.body.style.backgroundColor = this.randomColor;
   }
   pause() {
     throw new Error("Method pause not implemented.");
@@ -1728,8 +1738,13 @@ var _RandomColor = class _RandomColor extends Game {
   infoButtonOnclick() {
     this.infoModal.show();
   }
-  hintButtonOnclick() {
-    throw new Error("Method resultButtonOnClick not implemented.");
+  resultButtonOnclick() {
+    this.resultModal.titleElement.textContent = this.createResultModalTitle();
+    this.resultModal.contentElement.textContent = this.createResultModalContent();
+    this.resultModal.show();
+  }
+  createResultModalTitle() {
+    return `Current Color: ${this.randomColor}`;
   }
 };
 // Define colors to be shuffled

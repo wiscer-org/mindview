@@ -10,6 +10,8 @@ class RandomColor extends Mv.Game {
     // Define colors to be shuffled
     static colors: string[] = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "gray", "black", "white"];
     infoModal: Mv.Modal;
+    resultModal: Mv.Modal;
+    randomColor: string;
 
     constructor() {
         super();
@@ -22,7 +24,7 @@ class RandomColor extends Mv.Game {
             onclick: this.infoButtonOnclick.bind(this)
         });
         let resultButton = Mv.Buttons.result({
-            onclick: this.hintButtonOnclick.bind(this)
+            onclick: this.resultButtonOnclick.bind(this)
         });
 
         this.composer.addButton(Mv.Buttons.home());
@@ -32,15 +34,23 @@ class RandomColor extends Mv.Game {
         this.composer.start();
 
         this.initInfoModal();
+        this.initResultModal();
+    }
+    initResultModal() {
+        this.resultModal = Mv.Modals.alpha({
+            title: 'Current Color',
+            content: this.createResultModalContent(),
+        });
+    }
+    createResultModalContent(): string {
+        return `The current color displayed on screen is ${this.randomColor}.`;
     }
     initInfoModal() {
-
         // Init modal component here
         this.infoModal = Mv.Modals.alpha({
-            title: 'Random Color',
-            content: '<p>Guess the color on the screen.</p><p>Activate screen reader,  and click on the "Result" button to know the current color.</p>'
+            title: 'Random Color Game',
+            content: '<p>Objective of this game is to guess the color on the screen.</p><p>If screen reader is activated,  click on the "Result" button to let screen reader reads the current color.</p>'
         });
-
     }
     init(): void {
         throw new Error('Method init not implemented.');
@@ -52,9 +62,9 @@ class RandomColor extends Mv.Game {
     }
     newGame() {
         // Generate random color
-        let randomColor = RandomColor.colors[Math.floor(Math.random() * RandomColor.colors.length)];
+        this.randomColor = RandomColor.colors[Math.floor(Math.random() * RandomColor.colors.length)];
         // Update color
-        document.body.style.backgroundColor = randomColor;
+        document.body.style.backgroundColor = this.randomColor;
     }
     pause(): void {
         throw new Error('Method pause not implemented.');
@@ -71,7 +81,12 @@ class RandomColor extends Mv.Game {
     infoButtonOnclick(): void {
         this.infoModal.show();
     }
-    hintButtonOnclick(): void {
-        throw new Error('Method resultButtonOnClick not implemented.');
+    resultButtonOnclick(): void {
+        this.resultModal.titleElement.textContent = this.createResultModalTitle();
+        this.resultModal.contentElement.textContent = this.createResultModalContent();
+        this.resultModal.show();
+    }
+    createResultModalTitle(): string {
+        return `Current Color: ${this.randomColor}`
     }
 }
