@@ -195,18 +195,36 @@ var Modal = class {
   show() {
     document.body.appendChild(this.overlay);
     document.body.appendChild(this.element);
-    setTimeout(() => {
+    this.setSiblingsAccessibility(true);
+    requestAnimationFrame(() => {
       this.overlay.classList.add("visible");
       this.element.classList.add("visible");
-    }, 10);
+    });
   }
   close() {
+    this.setSiblingsAccessibility(false);
     this.overlay.classList.remove("visible");
     this.element.classList.remove("visible");
     setTimeout(() => {
-      this.overlay.remove();
-      this.element.remove();
+      document.body.removeChild(this.overlay);
+      document.body.removeChild(this.element);
     }, 300);
+  }
+  setSiblingsAccessibility(hideOthers) {
+    const siblings = Array.from(document.body.children).filter(
+      (el) => el !== this.element && el !== this.overlay
+    );
+    siblings.forEach((sibling) => {
+      if (hideOthers) {
+        sibling.setAttribute("aria-hidden", "true");
+      } else {
+        if (!sibling.hasAttribute("aria-modal")) {
+          sibling.removeAttribute("aria-hidden");
+        }
+      }
+    });
+    this.element.setAttribute("aria-hidden", hideOthers ? "false" : "true");
+    this.overlay.setAttribute("aria-hidden", "true");
   }
   setContent(content) {
     this.contentElement.innerHTML = content;
@@ -358,6 +376,8 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
       return new Promise((resolve) => {
         if (this.element) {
           this.element.classList.add("pop-out");
+          this.element.setAttribute("aria-hidden", "true");
+          console.log("set aria-hidden to true");
           this.element.addEventListener("animationend", () => {
             resolve();
           });

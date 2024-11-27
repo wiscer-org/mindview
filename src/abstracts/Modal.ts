@@ -106,22 +106,52 @@ export abstract class Modal {
     show(): void {
         document.body.appendChild(this.overlay);
         document.body.appendChild(this.element);
-        // Add a small delay before adding the visible class for animation
-        setTimeout(() => {
+
+        // Hide other content from screen readers
+        this.setSiblingsAccessibility(true);
+
+        // Show modal content
+        requestAnimationFrame(() => {
             this.overlay.classList.add('visible');
             this.element.classList.add('visible');
-        }, 10);
+        });
     }
 
     close(): void {
+        // Show other content to screen readers
+        this.setSiblingsAccessibility(false);
+
         this.overlay.classList.remove('visible');
         this.element.classList.remove('visible');
 
-        // Wait for animation to complete before removing elements
+        // Remove after animation
         setTimeout(() => {
-            this.overlay.remove();
-            this.element.remove();
-        }, 300); // Match this with CSS transition duration
+            document.body.removeChild(this.overlay);
+            document.body.removeChild(this.element);
+        }, 300);
+    }
+
+    private setSiblingsAccessibility(hideOthers: boolean) {
+        // Get all direct children of body except our modal and overlay
+        const siblings = Array.from(document.body.children).filter(
+            el => el !== this.element && el !== this.overlay
+        );
+
+        // Set aria-hidden for siblings
+        siblings.forEach(sibling => {
+            if (hideOthers) {
+                sibling.setAttribute('aria-hidden', 'true');
+            } else {
+                // For siblings that are modals, do not remove aria-hidden
+                if (!sibling.hasAttribute('aria-modal')) {
+                    sibling.removeAttribute('aria-hidden');
+                }
+            }
+        });
+
+        // Set aria-hidden for modal elements
+        this.element.setAttribute('aria-hidden', hideOthers ? 'false' : 'true');
+        this.overlay.setAttribute('aria-hidden', 'true'); // overlay should always be hidden from screen readers
     }
 
     setContent(content: string): void {
@@ -150,4 +180,3 @@ export abstract class Modal {
         this.closeButton.onclick = null;
     }
 }
-

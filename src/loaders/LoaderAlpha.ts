@@ -22,7 +22,9 @@ export class LoaderAlpha extends Loader {
     }
 
     async load(): Promise<void> {
+        // TODO: Show the loader modal
 
+        // Load resources
         await super.load()
 
         // Set the text, notify loading has finished
@@ -39,6 +41,9 @@ export class LoaderAlpha extends Loader {
 
             if (this.element) {
                 this.element.classList.add('pop-out');
+                this.element.setAttribute('aria-hidden', 'true');
+                console.log('set aria-hidden to true');
+
                 // Wait until animation ends
                 this.element.addEventListener("animationend", () => {
                     resolve();
