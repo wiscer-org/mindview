@@ -1,4 +1,5 @@
 import * as Mv from '../Mv';
+import { createFocusTrap } from 'focus-trap';
 
 export type ModalAttributes = Partial<HTMLDivElement> & {
     onClose?: () => void;
@@ -20,6 +21,7 @@ export abstract class Modal {
     protected closeButton: HTMLButtonElement;
     protected footerElement: HTMLElement;
     protected buttons: Mv.Button[] = [];
+    private focusTrap: any; // focus-trap instance
 
     // If `closeable` is true, will add a close button on top and at the bottom
     protected closeable: boolean = true;
@@ -44,6 +46,22 @@ export abstract class Modal {
         // Set up modal container
         // this.element.className = 'modal';
         Object.assign(this.element, attrs);
+
+        // Add ARIA attributes for accessibility
+        this.element.setAttribute('role', 'dialog');
+        this.element.setAttribute('aria-modal', 'true');
+        if (attrs.title) {
+            this.element.setAttribute('aria-labelledby', 'modal-title');
+            this.titleElement.id = 'modal-title';
+        }
+
+        // Initialize focus trap
+        this.focusTrap = createFocusTrap(this.element, {
+            escapeDeactivates: true,
+            allowOutsideClick: true,
+            returnFocusOnDeactivate: true,
+            fallbackFocus: this.element
+        });
 
         // Set up title
         this.initTitleElement(attrs);
@@ -110,6 +128,9 @@ export abstract class Modal {
         // Hide other content from screen readers
         this.setSiblingsAccessibility(true);
 
+        // Activate focus trap
+        this.focusTrap.activate();
+
         // Show modal content
         requestAnimationFrame(() => {
             this.overlay.classList.add('visible');
@@ -118,6 +139,9 @@ export abstract class Modal {
     }
 
     close(): void {
+        // Deactivate focus trap
+        this.focusTrap.deactivate();
+
         // Show other content to screen readers
         this.setSiblingsAccessibility(false);
 
@@ -175,6 +199,11 @@ export abstract class Modal {
     }
 
     destroy(): void {
+        // Deactivate focus trap if it exists
+        if (this.focusTrap) {
+            this.focusTrap.deactivate();
+        }
+
         this.close();
         this.overlay.onclick = null;
         this.closeButton.onclick = null;
