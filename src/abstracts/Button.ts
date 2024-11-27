@@ -1,5 +1,4 @@
 export type ButtonAttributes = (Partial<HTMLButtonElement> | Partial<HTMLAnchorElement>) & { onclick: () => void };
-
 export abstract class Button {
     protected element: HTMLElement;
 

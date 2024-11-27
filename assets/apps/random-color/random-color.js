@@ -135,34 +135,62 @@ var Game = class {
 
 // src/abstracts/Modal.ts
 var Modal = class {
-  constructor(attrs = {}) {
+  constructor(attrs = {}, buttons) {
+    this.buttons = [];
+    // If `closeable` is true, will add a close button on top and at the bottom
+    this.closeable = true;
     this.element = document.createElement("div");
     this.overlay = document.createElement("div");
     this.contentElement = document.createElement("div");
     this.titleElement = document.createElement("h1");
     this.closeButton = document.createElement("button");
+    this.footerElement = document.createElement("footer");
     this.overlay.className = "modal-overlay";
     this.overlay.onclick = (e) => {
       if (e.target === this.overlay) {
         this.close();
       }
     };
-    this.element.className = "modal";
     Object.assign(this.element, attrs);
-    this.titleElement.className = "modal-title";
-    if (attrs.title) {
-      this.titleElement.textContent = attrs.title;
+    this.initTitleElement(attrs);
+    if (this.closeable) {
+      this.addTopCloseButton();
     }
-    this.closeButton.className = "modal-close";
-    this.closeButton.innerHTML = "&times;";
-    this.closeButton.onclick = () => this.close();
+    this.setContentElement(attrs);
+    this.setButtons();
+    this.initFooterElement();
+    this.assembleModal();
+  }
+  assembleModal() {
+    this.element.appendChild(this.titleElement);
+    this.element.appendChild(this.contentElement);
+    this.element.appendChild(this.footerElement);
+  }
+  setContentElement(attrs) {
     this.contentElement.className = "modal-content";
     if (attrs.content) {
       this.contentElement.innerHTML = attrs.content;
     }
-    this.element.appendChild(this.titleElement);
-    this.element.appendChild(this.closeButton);
-    this.element.appendChild(this.contentElement);
+  }
+  addTopCloseButton() {
+    this.closeButton.className = "modal-close";
+    this.closeButton.innerHTML = "&times;";
+    this.closeButton.onclick = () => this.close();
+    this.titleElement.appendChild(this.closeButton);
+  }
+  initTitleElement(attrs) {
+    this.titleElement.className = "modal-title";
+    if (attrs.title) {
+      this.titleElement.textContent = attrs.title;
+    }
+  }
+  setButtons() {
+    if (this.closeable) {
+      let closeButton = Buttons.close({
+        onclick: this.close.bind(this)
+      });
+      this.buttons.push(closeButton);
+    }
   }
   show() {
     document.body.appendChild(this.overlay);
@@ -183,11 +211,17 @@ var Modal = class {
   setContent(content) {
     this.contentElement.innerHTML = content;
   }
-  setTitle(title) {
-    this.titleElement.textContent = title;
-  }
   getElement() {
     return this.element;
+  }
+  /**
+   * Init footer element and all children elements
+   */
+  initFooterElement() {
+    this.footerElement = document.createElement("footer");
+    this.buttons.forEach((button) => {
+      this.footerElement.appendChild(button.getHTMLElement());
+    });
   }
   destroy() {
     this.close();
@@ -453,6 +487,20 @@ var Composers = {
   }
 };
 
+// src/buttons/Close.ts
+var CloseButton = class extends Button {
+  constructor(attrs) {
+    super(
+      "Close",
+      "fa-times",
+      __spreadValues({
+        id: "close-button",
+        "ariaLabel": "Close"
+      }, attrs)
+    );
+  }
+};
+
 // src/buttons/index.ts
 var Buttons = {
   home() {
@@ -466,6 +514,10 @@ var Buttons = {
   },
   result(attrs) {
     return new ResultButton(attrs);
+  },
+  // Close buttons. The click handler will automatically provided based on context, e.g.: in modal.
+  close(attrs) {
+    return new CloseButton(attrs);
   }
 };
 
@@ -505,6 +557,9 @@ var RandomColor = class extends Game {
     this.composer.addButton(infoButton);
     this.composer.addButton(resultButton);
     this.composer.start();
+    this.initInfoModal();
+  }
+  initInfoModal() {
     this.infoModal = Modals.alpha({
       title: "Random Color",
       content: '<p>Guess the color on the screen.</p><p>Activate screen reader,  and click on the "Result" button to know the current color.</p>'

@@ -10,7 +10,11 @@
         // "rootDir": "{app-name}/src",
         // "rootDir": "./random-color-simple/src",
         "esModuleInterop": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "lib": [
+            "dom",
+            "es6"
+        ]
     },
     "include": [
         "_src",
@@ -19,6 +23,7 @@
     ],
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "assets"
     ]
 }

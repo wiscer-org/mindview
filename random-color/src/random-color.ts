@@ -31,11 +31,16 @@ class RandomColor extends Mv.Game {
 
         this.composer.start();
 
+        this.initInfoModal();
+    }
+    initInfoModal() {
+
         // Init modal component here
         this.infoModal = Mv.Modals.alpha({
             title: 'Random Color',
             content: '<p>Guess the color on the screen.</p><p>Activate screen reader,  and click on the "Result" button to know the current color.</p>'
         });
+
     }
     init(): void {
         throw new Error('Method init not implemented.');

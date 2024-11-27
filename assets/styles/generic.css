@@ -233,3 +233,33 @@ body {
     border-radius: 12px;
     border: 2px solid #e9ecef;
 }
+
+.modal-alpha footer {
+    padding: 12px 0 0;
+}
+
+.modal-alpha .button {
+    position: relative;
+    background: linear-gradient(30deg, #990000, #bb4444);
+    /* Gradient for playfulness */
+    border: 4px solid black;
+    border-radius: 20%;
+    height: 48px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 999;
+}
+
+.modal-alpha .button i {
+    color: white;
+    font-size: 24px;
+}
+
+.modal-alpha .button:hover {
+    transform: scale(1.2);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+}
