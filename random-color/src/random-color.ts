@@ -48,6 +48,13 @@ class RandomColor extends Mv.Game {
     start(): void {
         // Start game now
         this.infoModal.show();
+        this.newGame();
+    }
+    newGame() {
+        // Generate random color
+        let randomColor = RandomColor.colors[Math.floor(Math.random() * RandomColor.colors.length)];
+        // Update color
+        document.body.style.backgroundColor = randomColor;
     }
     pause(): void {
         throw new Error('Method pause not implemented.');

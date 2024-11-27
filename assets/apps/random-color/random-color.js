@@ -569,7 +569,7 @@ var Modals = {
 document.addEventListener("DOMContentLoaded", () => {
   let game = new RandomColor();
 });
-var RandomColor = class extends Game {
+var _RandomColor = class _RandomColor extends Game {
   constructor() {
     super();
     this.composer = Composers.Alpha(this);
@@ -596,6 +596,11 @@ var RandomColor = class extends Game {
   }
   start() {
     this.infoModal.show();
+    this.newGame();
+  }
+  newGame() {
+    let randomColor = _RandomColor.colors[Math.floor(Math.random() * _RandomColor.colors.length)];
+    document.body.style.backgroundColor = randomColor;
   }
   pause() {
     throw new Error("Method pause not implemented.");
@@ -617,4 +622,5 @@ var RandomColor = class extends Game {
   }
 };
 // Define colors to be shuffled
-RandomColor.colors = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "gray", "black", "white"];
+_RandomColor.colors = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "gray", "black", "white"];
+var RandomColor = _RandomColor;
