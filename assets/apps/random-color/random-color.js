@@ -1260,6 +1260,7 @@ var Modal = class {
   addTopCloseButton() {
     this.closeButton.className = "modal-close";
     this.closeButton.innerHTML = "&times;";
+    this.closeButton.setAttribute("aria-label", "Close Modal");
     this.closeButton.onclick = () => this.close();
     this.titleElement.appendChild(this.closeButton);
   }
