@@ -1207,7 +1207,7 @@ var Game = class {
 // src/abstracts/Modal.ts
 var import_focus_trap = __toESM(require_focus_trap());
 var Modal = class {
-  constructor(attrs = {}, buttons) {
+  constructor(attrs = {}, buttonsAndBehaviour) {
     this.buttons = [];
     // focus-trap instance
     // If `closeable` is true, will add a close button on top and at the bottom
@@ -1242,7 +1242,7 @@ var Modal = class {
       this.addTopCloseButton();
     }
     this.setContentElement(attrs);
-    this.setButtons();
+    this.setButtons(buttonsAndBehaviour);
     this.initFooterElement();
     this.assembleModal();
   }
@@ -1270,13 +1270,35 @@ var Modal = class {
       this.titleElement.textContent = attrs.title;
     }
   }
-  setButtons() {
+  setButtons(buttonsAndBehaviour) {
     if (this.closeable) {
       let closeButton = Buttons.close({
         onclick: this.close.bind(this)
       });
       this.buttons.push(closeButton);
     }
+    buttonsAndBehaviour.forEach(([button, behaviour]) => {
+      switch (behaviour) {
+        case 0 /* callbackAndClose */:
+          if (button.getHTMLElement() && button.getHTMLElement().onclick != null) {
+            const originalOnClick = button.getHTMLElement().onclick;
+            button.getHTMLElement().onclick = () => {
+              if (originalOnClick) {
+                originalOnClick.call(button.getHTMLElement());
+              }
+              this.close();
+            };
+          }
+          ;
+          break;
+        default:
+          break;
+      }
+      this.buttons.push(button);
+    });
+    this.buttons.forEach(
+      (button) => this.footerElement.appendChild(button.getHTMLElement())
+    );
   }
   show() {
     document.body.appendChild(this.overlay);
@@ -1660,19 +1682,19 @@ var Buttons = {
 
 // src/modals/Alpha.ts
 var ModalAlpha = class extends Modal {
-  constructor(attrs = {}) {
+  constructor(attrs = {}, buttonsAndBehaviour = []) {
     const defaultAttrs = __spreadValues({
       title: "Information",
       className: "modal-alpha"
     }, attrs);
-    super(defaultAttrs);
+    super(defaultAttrs, buttonsAndBehaviour);
   }
 };
 
 // src/modals/index.ts
 var Modals = {
-  alpha(attrs = {}) {
-    return new ModalAlpha(attrs);
+  alpha(attrs = {}, buttonsAndBehaviour) {
+    return new ModalAlpha(attrs, buttonsAndBehaviour);
   }
 };
 
@@ -1698,10 +1720,13 @@ var _RandomColor = class _RandomColor extends Game {
     this.initResultModal();
   }
   initResultModal() {
+    let nextButton = Buttons.next({
+      onclick: this.onclickNextButton.bind(this)
+    });
     this.resultModal = Modals.alpha({
       title: "Current Color",
       content: this.createResultModalContent()
-    });
+    }, [[nextButton, 0 /* callbackAndClose */]]);
   }
   createResultModalContent() {
     return `The current color displayed on screen is ${this.randomColor}.`;
@@ -1710,7 +1735,7 @@ var _RandomColor = class _RandomColor extends Game {
     this.infoModal = Modals.alpha({
       title: "Random Color Game",
       content: '<p>Objective of this game is to guess the color on the screen.</p><p>If screen reader is activated,  click on the "Result" button to let screen reader reads the current color.</p>'
-    });
+    }, []);
   }
   init() {
     throw new Error("Method init not implemented.");
@@ -1745,6 +1770,9 @@ var _RandomColor = class _RandomColor extends Game {
   }
   createResultModalTitle() {
     return `Current Color: ${this.randomColor}`;
+  }
+  onclickNextButton() {
+    this.newGame();
   }
 };
 // Define colors to be shuffled

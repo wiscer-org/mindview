@@ -9,8 +9,12 @@ export type ModalAttributes = Partial<HTMLDivElement> & {
     closeable?: boolean;
 };
 
-export enum ModalButton {
-    CallbackAndClose,
+// Define the buttons behaviours that will effect the modal.
+export enum ModalButtonBehaviour {
+    // Execute ònclick`before closing the modal
+    callbackAndClose,
+    // Will presis the passed ònclick
+    callbackOnly,
 }
 
 export abstract class Modal {
@@ -26,7 +30,7 @@ export abstract class Modal {
     // If `closeable` is true, will add a close button on top and at the bottom
     protected closeable: boolean = true;
 
-    constructor(attrs: ModalAttributes = {}, buttons: ModalButton[]) {
+    constructor(attrs: ModalAttributes = {}, buttonsAndBehaviour: [Mv.Button, ModalButtonBehaviour][]) {
         // Create modal elements
         this.element = document.createElement('div');
         this.overlay = document.createElement('div');
@@ -75,7 +79,7 @@ export abstract class Modal {
         this.setContentElement(attrs);
 
         // Add bottom buttons 
-        this.setButtons();
+        this.setButtons(buttonsAndBehaviour);
 
         // Set up footer
         this.initFooterElement();
@@ -113,14 +117,43 @@ export abstract class Modal {
         }
     }
 
-    private setButtons() {
+    private setButtons(buttonsAndBehaviour: [Mv.Button, Mv.ModalButtonBehaviour][]) {
         if (this.closeable) {
             let closeButton = Mv.Buttons.close({
                 onclick: this.close.bind(this),
             });
             this.buttons.push(closeButton);
         }
+
+        // Translate the passed `buttonsAndBehaviour` to `buttons. Will append `close`to close modal on the ònclick if needed.
+        buttonsAndBehaviour.forEach(([button, behaviour]): void => {
+            switch (behaviour) {
+                case Mv.ModalButtonBehaviour.callbackAndClose:
+                    if (button.getHTMLElement()
+                        && button.getHTMLElement().onclick != null) {
+                        // Wrap the `onclick` 
+                        const originalOnClick = button.getHTMLElement().onclick;
+                        button.getHTMLElement().onclick = () => {
+                            if (originalOnClick) {
+                                originalOnClick.call(button.getHTMLElement());
+                            }
+                            this.close();
+                        };
+                    };
+                    break;
+                default:
+                    // do nothing
+                    break;
+            }
+            this.buttons.push(button);
+        });
+
+        // Add buttons to footer
+        this.buttons.forEach(button =>
+            this.footerElement.appendChild(button.getHTMLElement())
+        );
     }
+
 
     show(): void {
         document.body.appendChild(this.overlay);

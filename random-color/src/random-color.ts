@@ -37,10 +37,16 @@ class RandomColor extends Mv.Game {
         this.initResultModal();
     }
     initResultModal() {
+        // Next button inside result modal, will start next game
+        let nextButton = Mv.Buttons.next({
+            onclick: this.onclickNextButton.bind(this)
+        });
+
+        // Init result modal
         this.resultModal = Mv.Modals.alpha({
             title: 'Current Color',
             content: this.createResultModalContent(),
-        });
+        }, [[nextButton, Mv.ModalButtonBehaviour.callbackAndClose]]);
     }
     createResultModalContent(): string {
         return `The current color displayed on screen is ${this.randomColor}.`;
@@ -50,7 +56,7 @@ class RandomColor extends Mv.Game {
         this.infoModal = Mv.Modals.alpha({
             title: 'Random Color Game',
             content: '<p>Objective of this game is to guess the color on the screen.</p><p>If screen reader is activated,  click on the "Result" button to let screen reader reads the current color.</p>'
-        });
+        }, []);
     }
     init(): void {
         throw new Error('Method init not implemented.');
@@ -88,5 +94,8 @@ class RandomColor extends Mv.Game {
     }
     createResultModalTitle(): string {
         return `Current Color: ${this.randomColor}`
+    }
+    onclickNextButton(): void {
+        this.newGame();
     }
 }
