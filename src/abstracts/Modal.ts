@@ -87,6 +87,7 @@ export abstract class Modal {
         // Assemble modal
         this.assembleModal();
     }
+    
     private assembleModal() {
         this.element.appendChild(this.titleElement);
         this.element.appendChild(this.contentElement);
