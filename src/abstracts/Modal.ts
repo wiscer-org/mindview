@@ -20,6 +20,7 @@ export enum ModalButtonBehaviour {
 export abstract class Modal {
     protected element: HTMLDivElement;
     protected overlay: HTMLDivElement;
+    protected headerElement: HTMLDivElement;
     public contentElement: HTMLDivElement;
     public titleElement: HTMLHeadingElement;
     protected closeButton: HTMLButtonElement;
@@ -34,6 +35,7 @@ export abstract class Modal {
         // Create modal elements
         this.element = document.createElement('div');
         this.overlay = document.createElement('div');
+        this.headerElement = document.createElement('div');
         this.contentElement = document.createElement('div');
         this.titleElement = document.createElement('h1');
         this.closeButton = document.createElement('button');
@@ -67,6 +69,9 @@ export abstract class Modal {
             fallbackFocus: this.element
         });
 
+        // Set up header
+        this.headerElement.className = 'modal-header';
+
         // Set up title
         this.initTitleElement(attrs);
 
@@ -89,7 +94,11 @@ export abstract class Modal {
     }
     
     private assembleModal() {
-        this.element.appendChild(this.titleElement);
+        this.headerElement.appendChild(this.titleElement);
+        if (this.closeable) {
+            this.headerElement.appendChild(this.closeButton);
+        }
+        this.element.appendChild(this.headerElement);
         this.element.appendChild(this.contentElement);
         this.element.appendChild(this.footerElement);
     }
@@ -108,7 +117,7 @@ export abstract class Modal {
         this.closeButton.setAttribute('aria-label', 'Close Modal');
         this.closeButton.onclick = () => this.close();
 
-        this.titleElement.appendChild(this.closeButton);
+        // this.titleElement.appendChild(this.closeButton);
     }
 
     private initTitleElement(attrs: Mv.ModalAttributes) {

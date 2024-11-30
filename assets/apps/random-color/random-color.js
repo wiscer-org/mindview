@@ -1214,6 +1214,7 @@ var Modal = class {
     this.closeable = true;
     this.element = document.createElement("div");
     this.overlay = document.createElement("div");
+    this.headerElement = document.createElement("div");
     this.contentElement = document.createElement("div");
     this.titleElement = document.createElement("h1");
     this.closeButton = document.createElement("button");
@@ -1237,6 +1238,7 @@ var Modal = class {
       returnFocusOnDeactivate: true,
       fallbackFocus: this.element
     });
+    this.headerElement.className = "modal-header";
     this.initTitleElement(attrs);
     if (this.closeable) {
       this.addTopCloseButton();
@@ -1247,7 +1249,11 @@ var Modal = class {
     this.assembleModal();
   }
   assembleModal() {
-    this.element.appendChild(this.titleElement);
+    this.headerElement.appendChild(this.titleElement);
+    if (this.closeable) {
+      this.headerElement.appendChild(this.closeButton);
+    }
+    this.element.appendChild(this.headerElement);
     this.element.appendChild(this.contentElement);
     this.element.appendChild(this.footerElement);
   }
@@ -1262,7 +1268,6 @@ var Modal = class {
     this.closeButton.innerHTML = "&times;";
     this.closeButton.setAttribute("aria-label", "Close Modal");
     this.closeButton.onclick = () => this.close();
-    this.titleElement.appendChild(this.closeButton);
   }
   initTitleElement(attrs) {
     this.titleElement.className = "modal-title";
