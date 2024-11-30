@@ -1160,7 +1160,7 @@ var Button = class {
     this.element = document.createElement("button");
     this.element.textContent = text;
     Object.assign(this.element, attrs);
-    this.element.className = "button";
+    this.element.classList.add("button");
     if (fontAwesomeIcon) {
       const iconElement = document.createElement("i");
       iconElement.className = `fas ${fontAwesomeIcon}`;
@@ -1258,7 +1258,7 @@ var Modal = class {
     }
   }
   addTopCloseButton() {
-    this.closeButton.className = "modal-close";
+    this.closeButton.className = "modal-close red";
     this.closeButton.innerHTML = "&times;";
     this.closeButton.setAttribute("aria-label", "Close Modal");
     this.closeButton.onclick = () => this.close();
@@ -1628,7 +1628,8 @@ var CloseButton = class extends Button {
       "fa-times",
       __spreadValues({
         id: "close-button",
-        "ariaLabel": "Close"
+        "ariaLabel": "Close",
+        "className": "red"
       }, attrs)
     );
   }
@@ -1639,6 +1640,7 @@ var NextButton = class extends Button {
   constructor(attrs) {
     super("Next", "fa-arrow-right", __spreadValues({
       id: "next-button",
+      className: "orange",
       "ariaLabel": "Next"
     }, attrs));
   }

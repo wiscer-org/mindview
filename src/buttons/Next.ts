@@ -5,6 +5,7 @@ export class NextButton extends Button {
         // Using fa-arrow-right icon for next
         super('Next', 'fa-arrow-right', {
             id: 'next-button',
+            className: 'orange',
             'ariaLabel': 'Next',
             ...attrs
         });

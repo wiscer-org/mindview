@@ -103,7 +103,7 @@ export abstract class Modal {
 
     addTopCloseButton() {
         // Set up top close button
-        this.closeButton.className = 'modal-close';
+        this.closeButton.className = 'modal-close red';
         this.closeButton.innerHTML = '&times;';
         this.closeButton.setAttribute('aria-label', 'Close Modal');
         this.closeButton.onclick = () => this.close();

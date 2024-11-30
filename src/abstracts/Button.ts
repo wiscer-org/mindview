@@ -14,7 +14,7 @@ export abstract class Button {
         Object.assign(this.element, attrs);
 
         // Add basic attributes
-        this.element.className = 'button';
+        this.element.classList.add('button');
 
         // Add FontAwesome icon if provided
         if (fontAwesomeIcon) {

@@ -7,6 +7,7 @@ export class CloseButton extends Button {
             {
                 id: 'close-button',
                 'ariaLabel': 'Close',
+                'className': 'red',
                 ...attrs
             });
     }

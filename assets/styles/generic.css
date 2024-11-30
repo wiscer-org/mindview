@@ -13,6 +13,28 @@ body {
     background: linear-gradient(20deg, #ddd, white);
 }
 
+/* basic button */
+button {
+    background: linear-gradient(30deg, #000, #444);
+}
+
+button.red {
+    background: linear-gradient(30deg, #990000, #bb4444);
+}
+
+button.orange {
+    background: linear-gradient(30deg, #CC5800, #FF8C00);
+}
+
+button.green {
+    background: linear-gradient(30deg, #002200, #006600);
+    /* Very Very Dark Green: #002200
+Darker Green: #004400
+Dark Green: #006600
+Green: #008000
+Lighter Green: #00A000 */
+}
+
 /* f-c for fixed-container */
 .f-c {
     position: fixed;
@@ -204,7 +226,6 @@ body {
     position: absolute;
     top: 15px;
     right: 15px;
-    background: #ff6b6b;
     border: 3px solid #333;
     font-size: 24px;
     cursor: pointer;
@@ -243,7 +264,7 @@ body {
 
 .modal-alpha .button {
     position: relative;
-    background: linear-gradient(30deg, #990000, #bb4444);
+    /* background: linear-gradient(30deg, #990000, #bb4444); */
     /* Gradient for playfulness */
     border: 4px solid black;
     border-radius: 20%;
