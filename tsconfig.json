@@ -17,13 +17,14 @@
         ]
     },
     "include": [
-        "_src",
+        "src",
         // Value below only to satisfy problems checker in VSCode
         "./random-color-simple/src"
     ],
     "exclude": [
         "node_modules",
         "dist",
-        "assets"
+        "assets",
+        "tests-components",
     ]
 }
