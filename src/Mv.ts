@@ -5,6 +5,8 @@ export { Modal, ModalAttributes, ModalButtonBehaviour } from './abstracts/Modal'
 export { Composers } from './composers';
 export { Buttons } from './buttons';
 export { Modals } from './modals';
+export { ZoomControls } from './zoom-controls';
+export { ZoomControl, ZoomControlAttributes } from './abstracts/ZoomControl';
 
 // Import button factory implementations
 import './buttons/Home';

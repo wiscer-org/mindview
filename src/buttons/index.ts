@@ -6,6 +6,8 @@ import { ResultButton } from './Result';
 import { CloseButton } from './Close';
 import { NextButton } from './Next';
 import { HintButton } from './Hint';
+import { PlusButton } from './Plus';
+import { MinusButton } from './Minus';
 
 export const Buttons = {
     home(): HomeButton {
@@ -29,5 +31,11 @@ export const Buttons = {
     },
     hint(attrs: ButtonAttributes): HintButton {
         return new HintButton(attrs);
+    },
+    plus(attrs: ButtonAttributes): PlusButton {
+        return new PlusButton();
+    },
+    minus(attrs: ButtonAttributes): MinusButton {
+        return new MinusButton();
     }
 } as const;

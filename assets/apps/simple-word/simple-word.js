@@ -1123,6 +1123,7 @@ var Composer = class {
   }
   layoutContainers() {
     document.body.appendChild(this.topLeft);
+    document.body.appendChild(this.bottomRight);
   }
   /**
    * Add control button
@@ -1130,6 +1131,13 @@ var Composer = class {
    */
   addButton(button) {
     this.buttons.push(button);
+  }
+  /**
+   * Add zoom control to the composer
+   * @param zoomControl 
+   */
+  addZoomControl(zoomControl) {
+    this.zoomControl = zoomControl;
   }
   createContainers() {
     this.topLeft = this.createCornerContainer();
@@ -1366,20 +1374,6 @@ var Modal = class {
   }
 };
 
-// src/buttons/Home.ts
-var HomeButton = class extends Button {
-  constructor() {
-    super("", "fa-home", {
-      id: "home-button",
-      "ariaLabel": "MindView home",
-      onclick: () => this.onClick
-    });
-  }
-  onClick() {
-    window.location.href = "/";
-  }
-};
-
 // src/abstracts/Loader.ts
 var Loader = class {
   constructor() {
@@ -1507,10 +1501,17 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
   }
 };
 
-// src/loaders/index.ts
-var Loaders = {
-  LoaderAlpha(query) {
-    return new LoaderAlpha(query);
+// src/buttons/Home.ts
+var HomeButton = class extends Button {
+  constructor() {
+    super("", "fa-home", {
+      id: "home-button",
+      "ariaLabel": "MindView home",
+      onclick: () => this.onClick
+    });
+  }
+  onClick() {
+    window.location.href = "/";
   }
 };
 
@@ -1551,7 +1552,7 @@ var Alpha = class extends Composer {
    * Start everything
    */
   start() {
-    const loader = Loaders.LoaderAlpha("#loader");
+    const loader = new LoaderAlpha("#loader");
     loader.setToLoad("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
     loader.setToLoad("https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css");
     loader.setToLoad("/assets/styles/generic.css");
@@ -1562,6 +1563,7 @@ var Alpha = class extends Composer {
     });
     loader.load().then(() => {
       this.layoutButtons();
+      this.layoutZoomControl();
       this.game.start();
     }).catch((error) => {
       console.error("Failed to load resources:", error);
@@ -1580,6 +1582,14 @@ var Alpha = class extends Composer {
             button.getHTMLElement().classList.remove("pop-in");
           }, 2e3);
         }
+      }
+    });
+  }
+  layoutZoomControl() {
+    return __async(this, null, function* () {
+      if (this.zoomControl) {
+        this.bottomRight.appendChild(this.zoomControl.getElement());
+        alert("fnisih adding zoom control");
       }
     });
   }
@@ -1737,13 +1747,63 @@ var Modals = {
   }
 };
 
-// random-color/src/random-color.ts
+// src/abstracts/ZoomControl.ts
+var ZoomControl = class {
+  constructor(attrs) {
+    this.attrs = attrs;
+    this.element = document.createElement("div");
+    this.element.classList.add("zoom-control");
+  }
+  destroy() {
+    this.element.remove();
+  }
+};
+
+// src/zoom-controls/alpha.ts
+var ZoomControlAlpha = class extends ZoomControl {
+  constructor(attrs) {
+    super(attrs);
+    this.plusButton = Buttons.plus({
+      onclick: () => attrs.onZoomIn()
+    });
+    this.plusButton.getHTMLElement().classList.add("zoom-in");
+    this.minusButton = Buttons.minus({
+      onclick: () => attrs.onZoomOut()
+    });
+    this.minusButton.getHTMLElement().classList.add("zoom-out");
+    this.element.appendChild(this.plusButton.getHTMLElement());
+    this.element.appendChild(this.minusButton.getHTMLElement());
+  }
+  getElement() {
+    return this.element;
+  }
+  destroy() {
+    this.plusButton.destroy();
+    this.minusButton.destroy();
+    super.destroy();
+  }
+};
+
+// src/zoom-controls/index.ts
+var ZoomControls = {
+  alpha: (attrs) => new ZoomControlAlpha(attrs)
+};
+
+// simple-word/src/simple-word.ts
 document.addEventListener("DOMContentLoaded", () => {
-  let game = new RandomColor();
+  let game = new SimpleWord();
+  window.addEventListener("resize", () => {
+    game.redrawCanvas();
+  });
 });
-var _RandomColor = class _RandomColor extends Game {
+var _SimpleWord = class _SimpleWord extends Game {
+  // The minimum font size
   constructor() {
     super();
+    this.currentZoomLevel = 10;
+    this.minZoomLevel = 1;
+    // Words will be the smallest
+    this.maxZoomLevel = 10;
     this.composer = Composers.Alpha(this);
     let infoButton = Buttons.info({
       onclick: this.infoButtonOnclick.bind(this)
@@ -1754,7 +1814,17 @@ var _RandomColor = class _RandomColor extends Game {
     this.composer.addButton(Buttons.home());
     this.composer.addButton(infoButton);
     this.composer.addButton(resultButton);
+    let zoomControls = ZoomControls.alpha({
+      onZoomIn: this.increaseZoomLevel.bind(this),
+      onZoomOut: this.decreaseZoomLevel.bind(this)
+    });
+    this.composer;
     this.composer.start();
+    this.canvas = document.createElement("canvas");
+    this.canvas.style.width = "100%";
+    this.canvas.style.height = "100%";
+    document.body.appendChild(this.canvas);
+    this.resizeCanvas();
     this.initInfoModal();
     this.initResultModal();
   }
@@ -1763,17 +1833,17 @@ var _RandomColor = class _RandomColor extends Game {
       onclick: this.onclickNextButton.bind(this)
     });
     this.resultModal = Modals.alpha({
-      title: "Current Color",
+      title: "Current Word",
       content: this.createResultModalContent()
     }, [[nextButton, 0 /* callbackAndClose */]]);
   }
   createResultModalContent() {
-    return `The current color displayed on screen is ${this.randomColor}.`;
+    return `The current word displayed on screen is "${this.currentWord}".`;
   }
   initInfoModal() {
     this.infoModal = Modals.alpha({
-      title: "Random Color Game",
-      content: '<p>Objective of this game is to guess the color on the screen.</p><p>If screen reader is activated,  click on the "Result" button to let screen reader reads the current color.</p>'
+      title: "Simple Word Game",
+      content: '<p>Objective of this game is to guess the word on the screen.</p><p>If screen reader is activated, click on the "Result" button to let screen reader reads the current word.</p>'
     }, []);
   }
   init() {
@@ -1784,8 +1854,8 @@ var _RandomColor = class _RandomColor extends Game {
     this.newGame();
   }
   newGame() {
-    this.randomColor = _RandomColor.colors[Math.floor(Math.random() * _RandomColor.colors.length)];
-    document.body.style.backgroundColor = this.randomColor;
+    this.currentWord = _SimpleWord.words[Math.floor(Math.random() * _SimpleWord.words.length)];
+    this.redrawCanvas();
   }
   pause() {
     throw new Error("Method pause not implemented.");
@@ -1794,7 +1864,9 @@ var _RandomColor = class _RandomColor extends Game {
     throw new Error("Method resume not implemented.");
   }
   end() {
-    throw new Error("Method end not implemented.");
+    if (this.canvas) {
+      document.body.removeChild(this.canvas);
+    }
   }
   getAssetsToLoad() {
     return [];
@@ -1808,15 +1880,55 @@ var _RandomColor = class _RandomColor extends Game {
     this.resultModal.show();
   }
   createResultModalTitle() {
-    return `Current Color: ${this.randomColor}`;
+    return `Current Word: ${this.currentWord}`;
   }
   onclickNextButton() {
     this.newGame();
   }
+  increaseZoomLevel() {
+    if (this.currentZoomLevel < this.maxZoomLevel) {
+      this.currentZoomLevel++;
+      this.redrawCanvas();
+    }
+  }
+  decreaseZoomLevel() {
+    if (this.currentZoomLevel > this.minZoomLevel) {
+      this.currentZoomLevel--;
+      this.redrawCanvas();
+    }
+  }
+  redrawCanvas() {
+    if (!this.canvas || !this.currentWord) return;
+    const context = this.canvas.getContext("2d");
+    if (!context) return;
+    this.resizeCanvas();
+    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    let fontSize = 1900;
+    context.font = `bold ${fontSize}px Arial`;
+    let textMetrics = context.measureText(this.currentWord);
+    const canvasWidth = this.canvas.width - 20;
+    const maxWidth = canvasWidth - (this.currentZoomLevel - 1) * canvasWidth / 8;
+    while (textMetrics.width > maxWidth && fontSize - 20 > _SimpleWord.minFontSize) {
+      fontSize -= 20;
+      context.font = `bold ${fontSize}px Arial`;
+      textMetrics = context.measureText(this.currentWord);
+    }
+    const x = (this.canvas.width - textMetrics.width) / 2;
+    const y = this.canvas.height / 2 + (textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent) / 2;
+    context.fillStyle = "black";
+    context.fillText(this.currentWord, x, y);
+  }
+  resizeCanvas() {
+    if (!this.canvas) return;
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  }
 };
-// Define colors to be shuffled
-_RandomColor.colors = ["red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "gray", "black", "white"];
-var RandomColor = _RandomColor;
+// Define words to be shuffled
+_SimpleWord.words = ["cat", "dog", "sun", "moon", "tree", "book", "fish", "bird", "star", "home"];
+// Words, will be the largest
+_SimpleWord.minFontSize = 8;
+var SimpleWord = _SimpleWord;
 /*! Bundled license information:
 
 tabbable/dist/index.js:

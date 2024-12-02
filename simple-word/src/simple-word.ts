@@ -1,7 +1,12 @@
 document
     .addEventListener('DOMContentLoaded', () => {
         let game = new SimpleWord();
+
+        window.addEventListener('resize', () => {
+            game.redrawCanvas();
+        });
     });
+
 
 
 import * as Mv from '../../src/Mv'
@@ -10,7 +15,13 @@ class SimpleWord extends Mv.Game {
     static words: string[] = ["cat", "dog", "sun", "moon", "tree", "book", "fish", "bird", "star", "home"];
     infoModal: Mv.Modal;
     resultModal: Mv.Modal;
+    canvas: HTMLCanvasElement;
     currentWord: string;
+    currentZoomLevel: number = 10;
+    minZoomLevel: number = 1;  // Words will be the smallest
+    maxZoomLevel: number = 10; // Words, will be the largest
+    static minFontSize: number = 8; // The minimum font size
+
 
     constructor() {
         super();
@@ -30,7 +41,21 @@ class SimpleWord extends Mv.Game {
         this.composer.addButton(infoButton);
         this.composer.addButton(resultButton);
 
+        // Add zoom controls
+        let zoomControls = Mv.ZoomControls.alpha({
+            onZoomIn: this.increaseZoomLevel.bind(this),
+            onZoomOut: this.decreaseZoomLevel.bind(this)
+        });
+        this.composer
+
         this.composer.start();
+
+        // Initialize canvas
+        this.canvas = document.createElement('canvas');
+        this.canvas.style.width = '100%';
+        this.canvas.style.height = '100%';
+        document.body.appendChild(this.canvas);
+        this.resizeCanvas();
 
         this.initInfoModal();
         this.initResultModal();
@@ -68,8 +93,9 @@ class SimpleWord extends Mv.Game {
     newGame() {
         // Generate random word
         this.currentWord = SimpleWord.words[Math.floor(Math.random() * SimpleWord.words.length)];
+
         // Update displayed word
-        document.body.textContent = this.currentWord;
+        this.redrawCanvas();
     }
     pause(): void {
         throw new Error('Method pause not implemented.');
@@ -78,7 +104,9 @@ class SimpleWord extends Mv.Game {
         throw new Error('Method resume not implemented.');
     }
     end(): void {
-        throw new Error('Method end not implemented.');
+        if (this.canvas) {
+            document.body.removeChild(this.canvas);
+        }
     }
     getAssetsToLoad(): string[] {
         return []
@@ -96,5 +124,64 @@ class SimpleWord extends Mv.Game {
     }
     onclickNextButton(): void {
         this.newGame();
+    }
+    increaseZoomLevel(): void {
+        if (this.currentZoomLevel < this.maxZoomLevel) {
+            this.currentZoomLevel++;
+            this.redrawCanvas();
+        }
+    }
+
+    decreaseZoomLevel(): void {
+        if (this.currentZoomLevel > this.minZoomLevel) {
+            this.currentZoomLevel--;
+            this.redrawCanvas();
+        }
+    }
+    redrawCanvas(): void {
+        if (!this.canvas || !this.currentWord) return;
+
+        // Get the canvas context
+        const context = this.canvas.getContext('2d');
+        if (!context) return;
+
+        // Resize canvas to match display size
+        this.resizeCanvas();
+
+        // Clear the canvas
+        context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Calculate the base font size based on zoom level (1-7)
+
+        // Start with the base font size
+        let fontSize = 1900;
+        context.font = `bold ${fontSize}px Arial`;
+        let textMetrics = context.measureText(this.currentWord);
+
+        // Adjust font size to fit width based on zoom level
+        const canvasWidth = this.canvas.width - 20;  // 20px padding
+        const maxWidth = canvasWidth - ((this.currentZoomLevel - 1) * canvasWidth / 8); // Formula is just an approximation
+        while (textMetrics.width > maxWidth && (fontSize - 20) > SimpleWord.minFontSize) {
+            fontSize -= 20;
+            context.font = `bold ${fontSize}px Arial`;
+            textMetrics = context.measureText(this.currentWord);
+        }
+
+        // Center the word on the canvas
+        const x = (this.canvas.width - textMetrics.width) / 2;
+        const y = (this.canvas.height / 2) +
+            ((textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent) / 2);
+
+        // Draw the word
+        context.fillStyle = 'black';
+        context.fillText(this.currentWord, x, y);
+    }
+
+    resizeCanvas(): void {
+        if (!this.canvas) return;
+
+        // Set canvas size to match display size
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
     }
 }

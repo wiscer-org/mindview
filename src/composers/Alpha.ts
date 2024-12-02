@@ -1,8 +1,8 @@
 import { Composer } from '../abstracts/Composer';
 import { Game } from '../abstracts/Game';
+import { LoaderAlpha } from '../loaders/LoaderAlpha';
 import { Button } from '../abstracts/Button';
 import { HomeButton } from '../buttons/Home';
-import { Loaders } from '../loaders';
 import { InfoButton } from '../buttons/Info';
 import { ResultButton } from '../buttons/Result';
 import { RefreshButton } from '../buttons/Refresh';
@@ -13,7 +13,7 @@ export class Alpha extends Composer {
      */
     start(): void {
         // Init Loader instance
-        const loader = Loaders.LoaderAlpha('#loader');
+        const loader = new LoaderAlpha('#loader');
 
         // Load assets
         loader.setToLoad('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
@@ -31,6 +31,7 @@ export class Alpha extends Composer {
             .then(() => {
                 // layout buttons after resources are loaded
                 this.layoutButtons();
+                this.layoutZoomControl();
                 // start game
                 this.game.start();
             })
@@ -57,6 +58,13 @@ export class Alpha extends Composer {
                 }, 2000);
 
             }
+        }
+    }
+
+    async layoutZoomControl() {
+        if (this.zoomControl) {
+            this.bottomRight.appendChild(this.zoomControl.getElement());
+            alert('fnisih adding zoom control');
         }
     }
 

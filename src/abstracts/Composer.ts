@@ -1,3 +1,4 @@
+import { ZoomControl } from './ZoomControl';
 import { Button } from './Button';
 import { Game } from './Game';
 
@@ -12,7 +13,8 @@ export abstract class Composer {
         this.layoutContainers();
     }
     layoutContainers() {
-        document.body.appendChild(this.topLeft)
+        document.body.appendChild(this.topLeft);
+        document.body.appendChild(this.bottomRight);
     }
     /**
      * start composing and take over whole control
@@ -30,12 +32,22 @@ export abstract class Composer {
         this.buttons.push(button);
     };
 
+    /**
+     * Add zoom control to the composer
+     * @param zoomControl 
+     */
+    public addZoomControl(zoomControl: ZoomControl) {
+        this.zoomControl = zoomControl;
+    }
+
     protected topLeft: HTMLElement;
     protected topRight: HTMLElement;
     protected bottomLeft: HTMLElement;
     protected bottomRight: HTMLElement;
 
     protected buttons: Button[] = [];
+    protected zoomControl: ZoomControl | undefined;
+
     private createContainers() {
         this.topLeft = this.createCornerContainer();
         this.topLeft.classList.add('top');
