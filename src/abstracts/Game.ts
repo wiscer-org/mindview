@@ -2,7 +2,7 @@ import * as Mv from '../Mv';
 
 export abstract class Game {
     protected state: string = 'INITIALIZING';
-    protected composer: Mv.Composer;
+    protected composer: Mv.Composer | undefined;
 
     /**
      * Accept `Mv.Composer` instance.

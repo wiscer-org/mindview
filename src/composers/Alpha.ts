@@ -45,7 +45,7 @@ export class Alpha extends Composer {
         let buttonsOrder = [HomeButton, InfoButton, RefreshButton, ResultButton];
         for (const ButtonType of buttonsOrder) {
             const button = this.buttons.find(b => b instanceof ButtonType);
-            if (button) {
+            if (button && this.topLeft) {
                 this.topLeft.appendChild(button.getHTMLElement());
                 button.getHTMLElement().classList.add('pop-in');
 
@@ -60,9 +60,11 @@ export class Alpha extends Composer {
             }
         }
     }
-
+    /**
+     * Add zoom control to the bottom right
+     */
     async layoutZoomControl() {
-        if (this.zoomControl) {
+        if (this.zoomControl && this.bottomRight) {
             this.bottomRight.appendChild(this.zoomControl.getElement());
             alert('fnisih adding zoom control');
         }

@@ -13,8 +13,10 @@ export abstract class Composer {
         this.layoutContainers();
     }
     layoutContainers() {
-        document.body.appendChild(this.topLeft);
-        document.body.appendChild(this.bottomRight);
+        if (this.topLeft)
+            document.body.appendChild(this.topLeft);
+        if (this.bottomRight)
+            document.body.appendChild(this.bottomRight);
     }
     /**
      * start composing and take over whole control
@@ -40,10 +42,10 @@ export abstract class Composer {
         this.zoomControl = zoomControl;
     }
 
-    protected topLeft: HTMLElement;
-    protected topRight: HTMLElement;
-    protected bottomLeft: HTMLElement;
-    protected bottomRight: HTMLElement;
+    protected topLeft: HTMLElement | undefined;
+    protected topRight: HTMLElement | undefined;
+    protected bottomLeft: HTMLElement | undefined;
+    protected bottomRight: HTMLElement | undefined;
 
     protected buttons: Button[] = [];
     protected zoomControl: ZoomControl | undefined;

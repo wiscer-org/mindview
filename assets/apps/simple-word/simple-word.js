@@ -1122,8 +1122,10 @@ var Composer = class {
     this.layoutContainers();
   }
   layoutContainers() {
-    document.body.appendChild(this.topLeft);
-    document.body.appendChild(this.bottomRight);
+    if (this.topLeft)
+      document.body.appendChild(this.topLeft);
+    if (this.bottomRight)
+      document.body.appendChild(this.bottomRight);
   }
   /**
    * Add control button
@@ -1574,7 +1576,7 @@ var Alpha = class extends Composer {
       let buttonsOrder = [HomeButton, InfoButton, RefreshButton, ResultButton];
       for (const ButtonType of buttonsOrder) {
         const button = this.buttons.find((b) => b instanceof ButtonType);
-        if (button) {
+        if (button && this.topLeft) {
           this.topLeft.appendChild(button.getHTMLElement());
           button.getHTMLElement().classList.add("pop-in");
           yield new Promise((resolve) => setTimeout(resolve, 100));
@@ -1585,9 +1587,12 @@ var Alpha = class extends Composer {
       }
     });
   }
+  /**
+   * Add zoom control to the bottom right
+   */
   layoutZoomControl() {
     return __async(this, null, function* () {
-      if (this.zoomControl) {
+      if (this.zoomControl && this.bottomRight) {
         this.bottomRight.appendChild(this.zoomControl.getElement());
         alert("fnisih adding zoom control");
       }
