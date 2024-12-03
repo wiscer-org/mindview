@@ -12,7 +12,6 @@ document
 import * as Mv from '../../src/Mv'
 class SimpleWord extends Mv.Game {
     // Define words to be shuffled
-    static words: string[] = ["cat", "dog", "sun", "moon", "tree", "book", "fish", "bird", "star", "home"];
     infoModal: Mv.Modal;
     resultModal: Mv.Modal;
     canvas: HTMLCanvasElement;
@@ -92,7 +91,7 @@ class SimpleWord extends Mv.Game {
     }
     newGame() {
         // Generate random word
-        this.currentWord = SimpleWord.words[Math.floor(Math.random() * SimpleWord.words.length)];
+        this.currentWord = this.randomizeWord();
 
         // Update displayed word
         this.redrawCanvas();
@@ -186,9 +185,21 @@ class SimpleWord extends Mv.Game {
 
     resizeCanvas(): void {
         if (!this.canvas) return;
-
         // Set canvas size to match display size
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
     }
+
+    randomizeWord() {
+        const randomWords = ["cat", "dog", "sun", "sky", "pen", "cup", "hat", "bat", "run", "fan", "dew",
+            "box", "lid", "net", "rat", "log", "pot", "tip", "map", "nap", "dot", "sip", "kit", "jar",
+            "rib", "tap", "pit", "bug", "fox", "gem", "hill", "kite", "leaf", "milk", "nest", "owl", "nil",
+            "sun", "moon", "star", "cake", "ice", "red", "cookie", "fun", "play", "nice", "run", "eat",
+            "bird", "seal", "owl", "cow", "donut", "ball", "sweet", "candy", "chips", "pop", "straw",
+            "cloud", "wind", "tree", "soil", "plum", "blue", "bike", "hand", "party", "rib", "mic", "neon",
+            "snack", "ball", "soon", "swim", "pan", "jump", "laugh", "tie", "hug",
+            "cat", "dog", "sun", "moon", "tree", "book", "fish", "bird", "star", "home", "beach"];
+        return randomWords[Math.floor(Math.random() * randomWords.length)];
+    }
+
 }

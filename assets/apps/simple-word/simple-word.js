@@ -1854,7 +1854,7 @@ var _SimpleWord = class _SimpleWord extends Game {
     this.newGame();
   }
   newGame() {
-    this.currentWord = _SimpleWord.words[Math.floor(Math.random() * _SimpleWord.words.length)];
+    this.currentWord = this.randomizeWord();
     this.redrawCanvas();
   }
   pause() {
@@ -1927,9 +1927,104 @@ var _SimpleWord = class _SimpleWord extends Game {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
   }
+  randomizeWord() {
+    const randomWords = [
+      "cat",
+      "dog",
+      "sun",
+      "sky",
+      "pen",
+      "cup",
+      "hat",
+      "bat",
+      "run",
+      "fan",
+      "dew",
+      "box",
+      "lid",
+      "net",
+      "rat",
+      "log",
+      "pot",
+      "tip",
+      "map",
+      "nap",
+      "dot",
+      "sip",
+      "kit",
+      "jar",
+      "rib",
+      "tap",
+      "pit",
+      "bug",
+      "fox",
+      "gem",
+      "hill",
+      "kite",
+      "leaf",
+      "milk",
+      "nest",
+      "owl",
+      "nil",
+      "sun",
+      "moon",
+      "star",
+      "cake",
+      "ice",
+      "red",
+      "cookie",
+      "fun",
+      "play",
+      "nice",
+      "run",
+      "eat",
+      "bird",
+      "seal",
+      "owl",
+      "cow",
+      "donut",
+      "ball",
+      "sweet",
+      "candy",
+      "chips",
+      "pop",
+      "straw",
+      "cloud",
+      "wind",
+      "tree",
+      "soil",
+      "plum",
+      "blue",
+      "bike",
+      "hand",
+      "party",
+      "rib",
+      "mic",
+      "neon",
+      "snack",
+      "ball",
+      "soon",
+      "swim",
+      "pan",
+      "jump",
+      "laugh",
+      "tie",
+      "hug",
+      "cat",
+      "dog",
+      "sun",
+      "moon",
+      "tree",
+      "book",
+      "fish",
+      "bird",
+      "star",
+      "home",
+      "beach"
+    ];
+    return randomWords[Math.floor(Math.random() * randomWords.length)];
+  }
 };
-// Define words to be shuffled
-_SimpleWord.words = ["cat", "dog", "sun", "moon", "tree", "book", "fish", "bird", "star", "home"];
 // Words, will be the largest
 _SimpleWord.minFontSize = 8;
 var SimpleWord = _SimpleWord;
