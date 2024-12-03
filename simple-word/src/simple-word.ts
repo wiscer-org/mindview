@@ -20,7 +20,7 @@ class SimpleWord extends Mv.Game {
     minZoomLevel: number = 1;  // Words will be the smallest
     maxZoomLevel: number = 10; // Words, will be the largest
     static minFontSize: number = 8; // The minimum font size
-
+    currentColor: string = "red";
 
     constructor() {
         super();
@@ -92,6 +92,8 @@ class SimpleWord extends Mv.Game {
     newGame() {
         // Generate random word
         this.currentWord = this.randomizeWord();
+        // Randomize color
+        this.currentColor = this.randomizeColor();
 
         // Update displayed word
         this.redrawCanvas();
@@ -177,9 +179,7 @@ class SimpleWord extends Mv.Game {
         const x = (this.canvas.width - textMetrics.width) / 2;
         const y = (this.canvas.height / 2) +
             ((textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent) / 2);
-
-        // Draw the word
-        context.fillStyle = 'black';
+        context.fillStyle = this.currentColor;
         context.fillText(this.currentWord, x, y);
     }
 
@@ -200,6 +200,11 @@ class SimpleWord extends Mv.Game {
             "snack", "ball", "soon", "swim", "pan", "jump", "laugh", "tie", "hug",
             "cat", "dog", "sun", "moon", "tree", "book", "fish", "bird", "star", "home", "beach"];
         return randomWords[Math.floor(Math.random() * randomWords.length)];
+    }
+    // Function to randomize color
+    randomizeColor() {
+        const colors = ["red", "darkblue", "darkgreen", "darkorange", "brown", "darkyellow", "darkpurple"];
+        return colors[Math.floor(Math.random() * colors.length)];
     }
 
 }

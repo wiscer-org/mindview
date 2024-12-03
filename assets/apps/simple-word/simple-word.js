@@ -1797,13 +1797,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 var _SimpleWord = class _SimpleWord extends Game {
-  // The minimum font size
   constructor() {
     super();
     this.currentZoomLevel = 10;
     this.minZoomLevel = 1;
     // Words will be the smallest
     this.maxZoomLevel = 10;
+    // The minimum font size
+    this.currentColor = "red";
     this.composer = Composers.Alpha(this);
     let infoButton = Buttons.info({
       onclick: this.infoButtonOnclick.bind(this)
@@ -1855,6 +1856,7 @@ var _SimpleWord = class _SimpleWord extends Game {
   }
   newGame() {
     this.currentWord = this.randomizeWord();
+    this.currentColor = this.randomizeColor();
     this.redrawCanvas();
   }
   pause() {
@@ -1919,7 +1921,7 @@ var _SimpleWord = class _SimpleWord extends Game {
     }
     const x = (this.canvas.width - textMetrics.width) / 2;
     const y = this.canvas.height / 2 + (textMetrics.actualBoundingBoxAscent - textMetrics.actualBoundingBoxDescent) / 2;
-    context.fillStyle = "black";
+    context.fillStyle = this.currentColor;
     context.fillText(this.currentWord, x, y);
   }
   resizeCanvas() {
@@ -2023,6 +2025,11 @@ var _SimpleWord = class _SimpleWord extends Game {
       "beach"
     ];
     return randomWords[Math.floor(Math.random() * randomWords.length)];
+  }
+  // Function to randomize color
+  randomizeColor() {
+    const colors = ["red", "darkblue", "darkgreen", "darkorange", "brown", "darkyellow", "darkpurple"];
+    return colors[Math.floor(Math.random() * colors.length)];
   }
 };
 // Words, will be the largest
