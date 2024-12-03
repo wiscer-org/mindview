@@ -132,7 +132,7 @@ class SimpleWord extends Mv.Game {
             this.redrawCanvas();
         } else {
             this.currentZoomLevel = this.maxZoomLevel;
-            // TODO toaster('Maximum oom level reached')
+            this.composer?.alert('Maximum zoom level reached');
         }
     }
 
@@ -142,7 +142,7 @@ class SimpleWord extends Mv.Game {
             this.redrawCanvas();
         } else {
             this.currentZoomLevel = this.minZoomLevel;
-            // TODO toaster('Minimum oom level reached')
+            this.composer?.alert('Minimum zoom level reached');
         }
     }
     redrawCanvas(): void {

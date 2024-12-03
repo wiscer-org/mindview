@@ -1548,6 +1548,52 @@ var RefreshButton = class extends Button {
   }
 };
 
+// src/alerts/Toaster.ts
+var Toaster = class {
+  constructor(customStyles = {}) {
+    // Default timeout
+    this.defaultTimeout = 17e3;
+    this.element = document.createElement("div");
+    this.element.setAttribute("role", "alert");
+    this.element.setAttribute("aria-live", "assertive");
+    const defaultStyles = {
+      position: "fixed",
+      bottom: "20px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      color: "white",
+      padding: "12px 24px",
+      borderRadius: "4px",
+      fontSize: "16px",
+      opacity: "0",
+      transition: "opacity 0.3s ease-in-out",
+      zIndex: "1000",
+      textAlign: "center",
+      maxWidth: "80%",
+      wordWrap: "break-word"
+    };
+    const finalStyles = __spreadValues(__spreadValues({}, defaultStyles), customStyles);
+    Object.assign(this.element.style, finalStyles);
+    document.body.appendChild(this.element);
+  }
+  /**
+   * Show toast message
+   * @param {string} message 
+   */
+  show(message) {
+    if (this.timeoutObject) {
+      clearTimeout(this.timeoutObject);
+    }
+    this.element.textContent = message;
+    this.element.style.opacity = "1";
+    this.timeoutObject = setTimeout(() => {
+      this.element.style.opacity = "0";
+    }, this.defaultTimeout);
+  }
+};
+var Toaster_default = Toaster;
+
 // src/composers/Alpha.ts
 var Alpha = class extends Composer {
   /**
@@ -1596,6 +1642,12 @@ var Alpha = class extends Composer {
         this.bottomRight.appendChild(this.zoomControl.getElement());
       }
     });
+  }
+  alert(message) {
+    if (!this.toaster) {
+      this.toaster = new Toaster_default();
+    }
+    this.toaster.show(message);
   }
   constructor(game) {
     super(game);
@@ -1890,19 +1942,23 @@ var _SimpleWord = class _SimpleWord extends Game {
     this.newGame();
   }
   increaseZoomLevel() {
+    var _a;
     if (this.currentZoomLevel < this.maxZoomLevel) {
       this.currentZoomLevel++;
       this.redrawCanvas();
     } else {
       this.currentZoomLevel = this.maxZoomLevel;
+      (_a = this.composer) == null ? void 0 : _a.alert("Maximum zoom level reached");
     }
   }
   decreaseZoomLevel() {
+    var _a;
     if (this.currentZoomLevel > this.minZoomLevel) {
       this.currentZoomLevel--;
       this.redrawCanvas();
     } else {
       this.currentZoomLevel = this.minZoomLevel;
+      (_a = this.composer) == null ? void 0 : _a.alert("Minimum zoom level reached");
     }
   }
   redrawCanvas() {
