@@ -6,8 +6,11 @@ import { HomeButton } from '../buttons/Home';
 import { InfoButton } from '../buttons/Info';
 import { ResultButton } from '../buttons/Result';
 import { RefreshButton } from '../buttons/Refresh';
+import Toaster from '../alerts/Toaster';
 
 export class Alpha extends Composer {
+    private toaster: Toaster | undefined;
+
     /**
      * Start everything
      */
@@ -67,6 +70,13 @@ export class Alpha extends Composer {
         if (this.zoomControl && this.bottomRight) {
             this.bottomRight.appendChild(this.zoomControl.getElement());
         }
+    }
+
+    alert(message: string): void {
+        if (!this.toaster) {
+            this.toaster = new Toaster();
+        }
+        this.toaster.show(message);
     }
 
     constructor(game: Game) {

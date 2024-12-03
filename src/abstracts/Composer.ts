@@ -27,6 +27,11 @@ export abstract class Composer {
      */
     abstract destroy(): void;
     /**
+     * Display an alert message
+     * @param message Message to display
+     */
+    abstract alert(message: string): void;
+    /**
      * Add control button
      * @param button 
      */
