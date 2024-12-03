@@ -1767,10 +1767,12 @@ var ZoomControlAlpha = class extends ZoomControl {
       }
     });
     this.plusButton.getHTMLElement().classList.add("zoom-in");
+    this.plusButton.getHTMLElement().classList.add("pop-in");
     this.minusButton = Buttons.minus({
       onclick: () => attrs.onZoomOut()
     });
     this.minusButton.getHTMLElement().classList.add("zoom-out");
+    this.minusButton.getHTMLElement().classList.add("pop-in");
     this.element.appendChild(this.plusButton.getHTMLElement());
     this.element.appendChild(this.minusButton.getHTMLElement());
   }

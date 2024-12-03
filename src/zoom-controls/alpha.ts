@@ -18,12 +18,14 @@ export class ZoomControlAlpha extends ZoomControl {
             }
         });
         this.plusButton.getHTMLElement().classList.add('zoom-in');
+        this.plusButton.getHTMLElement().classList.add('pop-in');  // To animate
 
         // Create minus button
         this.minusButton = Buttons.minus({
             onclick: () => attrs.onZoomOut()
         });
         this.minusButton.getHTMLElement().classList.add('zoom-out');
+        this.minusButton.getHTMLElement().classList.add('pop-in');
 
         // Add buttons to container
         this.element.appendChild(this.plusButton.getHTMLElement());
