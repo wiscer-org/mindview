@@ -62,7 +62,7 @@ export abstract class Composer {
         this.bottomLeft.classList.add('left');
         this.bottomRight = this.createCornerContainer();
         this.bottomRight.classList.add('bottom');
-        this.bottomLeft.classList.add('right');
+        this.bottomRight.classList.add('right');
     }
 
     private createCornerContainer(): HTMLElement {

@@ -68,6 +68,11 @@ Lighter Green: #00A000 */
     align-items: flex-start;
 }
 
+.f-c.bottom {
+    bottom: 12px;
+    align-items: flex-end;
+}
+
 /* Floating buttons */
 .f-c .button {
     position: relative;

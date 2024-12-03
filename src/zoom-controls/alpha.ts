@@ -1,6 +1,8 @@
 import { ZoomControl, ZoomControlAttributes } from '../abstracts/ZoomControl';
 import { Button } from '../abstracts/Button';
-import { Buttons } from '../buttons';
+import { Buttons } from '../buttons/index';
+// import { PlusButton } from '../buttons/Plus';
+// import { MinusButton } from '../buttons/Minus';
 
 export class ZoomControlAlpha extends ZoomControl {
     private plusButton: Button;
@@ -11,7 +13,9 @@ export class ZoomControlAlpha extends ZoomControl {
 
         // Create plus button
         this.plusButton = Buttons.plus({
-            onclick: () => attrs.onZoomIn()
+            onclick: () => {
+                attrs.onZoomIn();
+            }
         });
         this.plusButton.getHTMLElement().classList.add('zoom-in');
 

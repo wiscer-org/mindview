@@ -33,9 +33,9 @@ export const Buttons = {
         return new HintButton(attrs);
     },
     plus(attrs: ButtonAttributes): PlusButton {
-        return new PlusButton();
+        return new PlusButton(attrs);
     },
     minus(attrs: ButtonAttributes): MinusButton {
-        return new MinusButton();
+        return new MinusButton(attrs);
     }
 } as const;

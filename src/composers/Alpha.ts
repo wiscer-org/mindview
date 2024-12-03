@@ -66,7 +66,6 @@ export class Alpha extends Composer {
     async layoutZoomControl() {
         if (this.zoomControl && this.bottomRight) {
             this.bottomRight.appendChild(this.zoomControl.getElement());
-            alert('fnisih adding zoom control');
         }
     }
 

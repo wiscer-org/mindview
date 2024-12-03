@@ -42,11 +42,11 @@ class SimpleWord extends Mv.Game {
         this.composer.addButton(resultButton);
 
         // Add zoom controls
-        let zoomControls = Mv.ZoomControls.alpha({
+        let zoomControl = Mv.ZoomControls.alpha({
             onZoomIn: this.increaseZoomLevel.bind(this),
             onZoomOut: this.decreaseZoomLevel.bind(this)
         });
-        this.composer
+        this.composer.addZoomControl(zoomControl);
 
         this.composer.start();
 
@@ -129,6 +129,9 @@ class SimpleWord extends Mv.Game {
         if (this.currentZoomLevel < this.maxZoomLevel) {
             this.currentZoomLevel++;
             this.redrawCanvas();
+        } else {
+            this.currentZoomLevel = this.maxZoomLevel;
+            // TODO toaster('Maximum oom level reached')
         }
     }
 
@@ -136,6 +139,9 @@ class SimpleWord extends Mv.Game {
         if (this.currentZoomLevel > this.minZoomLevel) {
             this.currentZoomLevel--;
             this.redrawCanvas();
+        } else {
+            this.currentZoomLevel = this.minZoomLevel;
+            // TODO toaster('Minimum oom level reached')
         }
     }
     redrawCanvas(): void {
@@ -154,13 +160,14 @@ class SimpleWord extends Mv.Game {
         // Calculate the base font size based on zoom level (1-7)
 
         // Start with the base font size
-        let fontSize = 1900;
+        let fontSize = 700;
         context.font = `bold ${fontSize}px Arial`;
         let textMetrics = context.measureText(this.currentWord);
 
         // Adjust font size to fit width based on zoom level
         const canvasWidth = this.canvas.width - 20;  // 20px padding
-        const maxWidth = canvasWidth - ((this.currentZoomLevel - 1) * canvasWidth / 8); // Formula is just an approximation
+        // Determine the max width of the word. The formula is based on approximation with minimal width is 100
+        const maxWidth = (this.currentZoomLevel - this.minZoomLevel) / (this.maxZoomLevel - this.minZoomLevel) * (canvasWidth - 100);
         while (textMetrics.width > maxWidth && (fontSize - 20) > SimpleWord.minFontSize) {
             fontSize -= 20;
             context.font = `bold ${fontSize}px Arial`;

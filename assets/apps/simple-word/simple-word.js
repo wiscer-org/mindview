@@ -1153,7 +1153,7 @@ var Composer = class {
     this.bottomLeft.classList.add("left");
     this.bottomRight = this.createCornerContainer();
     this.bottomRight.classList.add("bottom");
-    this.bottomLeft.classList.add("right");
+    this.bottomRight.classList.add("right");
   }
   createCornerContainer() {
     const container = document.createElement("div");
@@ -1594,7 +1594,6 @@ var Alpha = class extends Composer {
     return __async(this, null, function* () {
       if (this.zoomControl && this.bottomRight) {
         this.bottomRight.appendChild(this.zoomControl.getElement());
-        alert("fnisih adding zoom control");
       }
     });
   }
@@ -1678,27 +1677,21 @@ var HintButton = class extends Button {
 
 // src/buttons/Plus.ts
 var PlusButton = class extends Button {
-  constructor() {
-    super("", "fa-plus", {
+  constructor(attrs) {
+    super("", "fa-plus", __spreadValues({
       id: "plus-button",
-      "ariaLabel": "Zoom in",
-      onclick: () => this.onClick()
-    });
-  }
-  onClick() {
+      "ariaLabel": "Zoom in"
+    }, attrs));
   }
 };
 
 // src/buttons/Minus.ts
 var MinusButton = class extends Button {
-  constructor() {
-    super("", "fa-minus", {
+  constructor(attrs) {
+    super("", "fa-minus", __spreadValues({
       id: "minus-button",
-      "ariaLabel": "Zoom out",
-      onclick: () => this.onClick()
-    });
-  }
-  onClick() {
+      "ariaLabel": "Zoom out"
+    }, attrs));
   }
 };
 
@@ -1727,10 +1720,10 @@ var Buttons = {
     return new HintButton(attrs);
   },
   plus(attrs) {
-    return new PlusButton();
+    return new PlusButton(attrs);
   },
   minus(attrs) {
-    return new MinusButton();
+    return new MinusButton(attrs);
   }
 };
 
@@ -1769,7 +1762,9 @@ var ZoomControlAlpha = class extends ZoomControl {
   constructor(attrs) {
     super(attrs);
     this.plusButton = Buttons.plus({
-      onclick: () => attrs.onZoomIn()
+      onclick: () => {
+        attrs.onZoomIn();
+      }
     });
     this.plusButton.getHTMLElement().classList.add("zoom-in");
     this.minusButton = Buttons.minus({
@@ -1819,11 +1814,11 @@ var _SimpleWord = class _SimpleWord extends Game {
     this.composer.addButton(Buttons.home());
     this.composer.addButton(infoButton);
     this.composer.addButton(resultButton);
-    let zoomControls = ZoomControls.alpha({
+    let zoomControl = ZoomControls.alpha({
       onZoomIn: this.increaseZoomLevel.bind(this),
       onZoomOut: this.decreaseZoomLevel.bind(this)
     });
-    this.composer;
+    this.composer.addZoomControl(zoomControl);
     this.composer.start();
     this.canvas = document.createElement("canvas");
     this.canvas.style.width = "100%";
@@ -1894,12 +1889,16 @@ var _SimpleWord = class _SimpleWord extends Game {
     if (this.currentZoomLevel < this.maxZoomLevel) {
       this.currentZoomLevel++;
       this.redrawCanvas();
+    } else {
+      this.currentZoomLevel = this.maxZoomLevel;
     }
   }
   decreaseZoomLevel() {
     if (this.currentZoomLevel > this.minZoomLevel) {
       this.currentZoomLevel--;
       this.redrawCanvas();
+    } else {
+      this.currentZoomLevel = this.minZoomLevel;
     }
   }
   redrawCanvas() {
@@ -1908,11 +1907,11 @@ var _SimpleWord = class _SimpleWord extends Game {
     if (!context) return;
     this.resizeCanvas();
     context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    let fontSize = 1900;
+    let fontSize = 700;
     context.font = `bold ${fontSize}px Arial`;
     let textMetrics = context.measureText(this.currentWord);
     const canvasWidth = this.canvas.width - 20;
-    const maxWidth = canvasWidth - (this.currentZoomLevel - 1) * canvasWidth / 8;
+    const maxWidth = (this.currentZoomLevel - this.minZoomLevel) / (this.maxZoomLevel - this.minZoomLevel) * (canvasWidth - 100);
     while (textMetrics.width > maxWidth && fontSize - 20 > _SimpleWord.minFontSize) {
       fontSize -= 20;
       context.font = `bold ${fontSize}px Arial`;

@@ -1,15 +1,12 @@
-import { Button } from '../abstracts/Button';
+import { Button, ButtonAttributes } from '../abstracts/Button';
 
 export class MinusButton extends Button {
-    constructor() {
+    constructor(attrs: ButtonAttributes) {
         super('', 'fa-minus', {
             id: 'minus-button',
             'ariaLabel': 'Zoom out',
-            onclick: () => this.onClick(),
+            ...attrs,
         });
     }
 
-    onClick(): void {
-        // Empty onClick as it will be set by the consumer
-    }
 }
