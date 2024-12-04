@@ -92,7 +92,7 @@ export abstract class Modal {
         // Assemble modal
         this.assembleModal();
     }
-    
+
     private assembleModal() {
         this.headerElement.appendChild(this.titleElement);
         if (this.closeable) {
@@ -143,9 +143,9 @@ export abstract class Modal {
                         && button.getHTMLElement().onclick != null) {
                         // Wrap the `onclick` 
                         const originalOnClick = button.getHTMLElement().onclick;
-                        button.getHTMLElement().onclick = () => {
+                        button.getHTMLElement().onclick = (event) => {
                             if (originalOnClick) {
-                                originalOnClick.call(button.getHTMLElement());
+                                originalOnClick.call(button.getHTMLElement(), event);
                             }
                             this.close();
                         };
