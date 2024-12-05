@@ -6,7 +6,9 @@ export class LoaderAlpha extends Loader {
     infoStatus: HTMLElement | null = null;
 
     constructor(query: string) {
-        super();
+        // `query` is CSS selector. Loader container element need to be existed in DOM to be used.
+        super(query);
+
         this.element = document.querySelector(query);
         if (!this.element) {
             throw new Error(`Element with query "${query}" not found`);
@@ -22,8 +24,6 @@ export class LoaderAlpha extends Loader {
     }
 
     async load(): Promise<void> {
-        // TODO: Show the loader modal
-
         // Load resources
         await super.load()
 
@@ -34,18 +34,19 @@ export class LoaderAlpha extends Loader {
         await new Promise<void>((r) => setTimeout(r, 400));
 
         // Hide and wait the loader HTML element after resources are loaded;
-        await this.hideElement();
+        await this.hide();
     }
-    async hideElement() {
+    async hideAnimation() {
         return new Promise<void>((resolve) => {
-
             if (this.element) {
                 this.element.classList.add('pop-out');
                 this.element.setAttribute('aria-hidden', 'true');
                 console.log('set aria-hidden to true');
 
-                // Wait until animation ends
+                // Wait until animation ends, then remove from DOM
                 this.element.addEventListener("animationend", () => {
+                    // Remove the element from DOM after animation
+                    this.element?.parentNode?.removeChild(this.element);
                     resolve();
                 });
             } else {

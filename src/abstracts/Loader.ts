@@ -1,6 +1,14 @@
 export abstract class Loader {
     protected toLoad: string[] = [];
     protected toLoadOnBackgrund: string[] = [];
+    protected element: HTMLElement | null = null;
+
+    constructor(query: string) {
+        this.element = document.querySelector(query);
+        if (!this.element) {
+            throw new Error(`Element with query "${query}" not found. Element need to be already existed in DOM to be used as Loader container.`);
+        }
+    }
 
     setToLoad(src: string): void {
         this.toLoad.push(src);
@@ -11,6 +19,11 @@ export abstract class Loader {
     }
 
     async load(): Promise<void> {
+        // Add the element to DOM before loading
+        if (this.element && this.element?.parentNode !== document.body) {
+            document.body.appendChild(this.element);
+        }
+
         let promises: Promise<void>[] = this.toLoad.map((src) => {
             return this.mapTypeAndLoad(src);
         });
@@ -43,6 +56,7 @@ export abstract class Loader {
                 throw new Error(`Unsupported file type: ${fileExtension}`);
         }
     }
+
     // Append to head
     private async loadCss(src: string): Promise<void> {
         const cssLink = document.createElement('link');
@@ -59,6 +73,7 @@ export abstract class Loader {
             };
         });
     }
+
     private async loadScript(src: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             const script = document.createElement('script');
@@ -74,4 +89,14 @@ export abstract class Loader {
             document.head.appendChild(script);
         });
     }
+    async hide(): Promise<void> {
+        // Wait for hide animation in the child class
+        await this.hideAnimation();
+
+        // !important: Detach eleement from DOM, because it could block event of other elements
+        if (this.element && this.element.parentNode) {
+            this.element.parentNode.removeChild(this.element);
+        }
+    }
+    abstract hideAnimation(): Promise<void>;
 }
