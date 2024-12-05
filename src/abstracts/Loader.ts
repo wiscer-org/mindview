@@ -45,6 +45,7 @@ export abstract class Loader {
                 .catch((error) => reject(error));
         });
     }
+
     private mapTypeAndLoad(src: string): Promise<void> {
         const fileExtension = src.split('.').pop()?.toLowerCase();
         switch (fileExtension) {
@@ -52,6 +53,10 @@ export abstract class Loader {
                 return this.loadCss(src);
             case 'js':
                 return this.loadScript(src);
+            case 'mp3':
+            case 'wav':
+            case 'ogg':
+                return this.loadAudio(src);
             default:
                 throw new Error(`Unsupported file type: ${fileExtension}`);
         }
@@ -89,14 +94,28 @@ export abstract class Loader {
             document.head.appendChild(script);
         });
     }
+
+    private async loadAudio(src: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const audio = new Audio(src);
+            audio.oncanplaythrough = () => {
+                resolve();
+            };
+            audio.onerror = (error) => {
+                reject(error);
+            };
+        });
+    }
+
     async hide(): Promise<void> {
         // Wait for hide animation in the child class
         await this.hideAnimation();
 
-        // !important: Detach eleement from DOM, because it could block event of other elements
+        // !important: Detach element from DOM, because it could block event of other elements
         if (this.element && this.element.parentNode) {
             this.element.parentNode.removeChild(this.element);
         }
     }
+
     abstract hideAnimation(): Promise<void>;
 }
