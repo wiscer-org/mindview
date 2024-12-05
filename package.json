@@ -14,6 +14,7 @@
     "live:simple-word": "esbuild ./simple-word/src/simple-word.ts --bundle --outdir=./assets/apps/simple-word/ --platform=node --target=es6 --watch",
     "build:tests_templates_starter.v1": "esbuild ./tests/templates/starter.v1/src/starter.v1.ts --bundle --outdir=./assets/scripts/ --platform=node --target=es6",
     "live:tests_templates_starter.v1": "esbuild ./tests/templates/starter.v1/src/starter.v1.ts --bundle --outdir=./assets/scripts/ --platform=node --target=es6 --watch",
+    "live:pop-the-balloon": "esbuild ./pop-the-balloon/src/pop-the-balloon.ts --bundle --outdir=./assets/apps/pop-the-balloon/ --platform=node --target=es6 --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
