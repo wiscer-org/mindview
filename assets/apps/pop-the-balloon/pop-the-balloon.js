@@ -39,6 +39,52 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 
+// src/abstracts/ScoreComponent.ts
+var ScoreComponent = class {
+  constructor() {
+    this.score = 0;
+    this.element = document.createElement("div");
+    this.element.textContent = this.score.toString();
+  }
+  getScore() {
+    return this.score;
+  }
+  addScore(score = 1) {
+    this.score++;
+    this.animateScoreUpdate();
+  }
+  setScore(score) {
+    this.score = score;
+  }
+};
+
+// src/score-components/ScoreComponentAlpha.ts
+var ScoreAlpha = class extends ScoreComponent {
+  constructor() {
+    super();
+  }
+  animateShow() {
+    return Promise.resolve();
+  }
+  animateScoreUpdate() {
+    this.element.textContent = this.score.toString();
+    this.element.classList.add("pop-in");
+    return new Promise((resolve) => {
+      this.element.addEventListener("animationend", () => {
+        this.element.classList.remove("pop-in");
+        resolve();
+      });
+    });
+  }
+};
+
+// src/score-components/index.ts
+var ScoreComponents = {
+  alpha() {
+    return new ScoreAlpha();
+  }
+};
+
 // src/abstracts/Composer.ts
 var Composer = class {
   constructor(game) {
@@ -53,6 +99,10 @@ var Composer = class {
   layoutContainers() {
     if (this.topLeft)
       document.body.appendChild(this.topLeft);
+    if (this.topCenter)
+      document.body.appendChild(this.topCenter);
+    if (this.topRight)
+      document.body.appendChild(this.topRight);
     if (this.bottomRight)
       document.body.appendChild(this.bottomRight);
   }
@@ -71,23 +121,47 @@ var Composer = class {
     this.zoomControl = zoomControl;
   }
   createContainers() {
-    this.topLeft = this.createCornerContainer();
+    this.topLeft = this.createElementsContainer();
     this.topLeft.classList.add("top");
     this.topLeft.classList.add("left");
-    this.topRight = this.createCornerContainer();
+    this.topCenter = this.createElementsContainer();
+    this.topCenter.classList.add("top");
+    this.topCenter.classList.add("center");
+    this.topRight = this.createElementsContainer();
     this.topRight.classList.add("top");
     this.topRight.classList.add("right");
-    this.bottomLeft = this.createCornerContainer();
+    this.bottomLeft = this.createElementsContainer();
     this.bottomLeft.classList.add("bottom");
     this.bottomLeft.classList.add("left");
-    this.bottomRight = this.createCornerContainer();
+    this.bottomRight = this.createElementsContainer();
     this.bottomRight.classList.add("bottom");
     this.bottomRight.classList.add("right");
   }
-  createCornerContainer() {
+  createElementsContainer() {
     const container = document.createElement("div");
     container.classList.add("f-c");
     return container;
+  }
+  initScoreComponentIfNeeded() {
+    if (!this.scoreComponent) {
+      this.scoreComponent = ScoreComponents.alpha();
+      this.scoreComponent.setScore(0);
+    }
+  }
+  setScore(score) {
+    var _a;
+    this.initScoreComponentIfNeeded();
+    (_a = this.scoreComponent) == null ? void 0 : _a.setScore(score);
+  }
+  addScore(increase = 1) {
+    var _a;
+    this.initScoreComponentIfNeeded();
+    (_a = this.scoreComponent) == null ? void 0 : _a.addScore(increase);
+  }
+  getScore() {
+    var _a, _b;
+    this.initScoreComponentIfNeeded();
+    return (_b = (_a = this.scoreComponent) == null ? void 0 : _a.getScore()) != null ? _b : 0;
   }
 };
 
@@ -414,11 +488,18 @@ var Alpha = class extends Composer {
     });
     loader.load().then(() => {
       this.layoutButtons();
+      this.layoutScoreComponent();
       this.layoutZoomControl();
       this.game.start();
     }).catch((error) => {
       console.error("Failed to load resources:", error);
     });
+  }
+  layoutScoreComponent() {
+    if (this.scoreComponent && this.topCenter) {
+      this.topCenter.appendChild(this.scoreComponent.element);
+      this.scoreComponent.animateShow();
+    }
   }
   layoutButtons() {
     return __async(this, null, function* () {
@@ -643,6 +724,7 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
       });
       this.composer.addButton(Buttons.home());
       this.composer.addButton(infoButton);
+      this.composer.setScore(0);
       this.composer.start();
     });
   }
@@ -778,6 +860,8 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     }
   }
   addScore() {
+    var _a;
+    (_a = this.composer) == null ? void 0 : _a.addScore(1);
   }
   showPoppedBalloon(x, y) {
     const popElement = document.createElement("div");

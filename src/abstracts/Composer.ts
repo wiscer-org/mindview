@@ -1,6 +1,8 @@
 import { ZoomControl } from './ZoomControl';
 import { Button } from './Button';
 import { Game } from './Game';
+import { ScoreComponent } from './ScoreComponent';
+import { ScoreComponents } from '../score-components/index';
 
 export abstract class Composer {
     // Assets to be loaded
@@ -15,6 +17,10 @@ export abstract class Composer {
     layoutContainers() {
         if (this.topLeft)
             document.body.appendChild(this.topLeft);
+        if (this.topCenter)
+            document.body.appendChild(this.topCenter);
+        if (this.topRight)
+            document.body.appendChild(this.topRight);
         if (this.bottomRight)
             document.body.appendChild(this.bottomRight);
     }
@@ -48,6 +54,7 @@ export abstract class Composer {
     }
 
     protected topLeft: HTMLElement | undefined;
+    protected topCenter: HTMLElement | undefined;
     protected topRight: HTMLElement | undefined;
     protected bottomLeft: HTMLElement | undefined;
     protected bottomRight: HTMLElement | undefined;
@@ -56,23 +63,48 @@ export abstract class Composer {
     protected zoomControl: ZoomControl | undefined;
 
     private createContainers() {
-        this.topLeft = this.createCornerContainer();
+        this.topLeft = this.createElementsContainer();
         this.topLeft.classList.add('top');
         this.topLeft.classList.add('left');
-        this.topRight = this.createCornerContainer();
+        this.topCenter = this.createElementsContainer();
+        this.topCenter.classList.add('top');
+        this.topCenter.classList.add('center');
+        this.topRight = this.createElementsContainer();
         this.topRight.classList.add('top');
         this.topRight.classList.add('right');
-        this.bottomLeft = this.createCornerContainer();
+        this.bottomLeft = this.createElementsContainer();
         this.bottomLeft.classList.add('bottom');
         this.bottomLeft.classList.add('left');
-        this.bottomRight = this.createCornerContainer();
+        this.bottomRight = this.createElementsContainer();
         this.bottomRight.classList.add('bottom');
         this.bottomRight.classList.add('right');
     }
 
-    private createCornerContainer(): HTMLElement {
+    private createElementsContainer(): HTMLElement {
         const container = document.createElement('div');
         container.classList.add('f-c')
         return container;
+    }
+
+    // Start of score component releated code
+    protected scoreComponent: ScoreComponent | undefined;
+
+    initScoreComponentIfNeeded() {
+        if (!this.scoreComponent) {
+            this.scoreComponent = ScoreComponents.alpha();
+            this.scoreComponent.setScore(0)
+        }
+    }
+    public setScore(score: number) {
+        this.initScoreComponentIfNeeded();
+        this.scoreComponent?.setScore(score);
+    }
+    public addScore(increase: number = 1): void {
+        this.initScoreComponentIfNeeded();
+        this.scoreComponent?.addScore(increase);
+    }
+    public getScore(): number {
+        this.initScoreComponentIfNeeded();
+        return this.scoreComponent?.getScore() ?? 0;
     }
 }

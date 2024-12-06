@@ -24,11 +24,11 @@ class PopTheBalloon extends Mv.Game {
     constructor() {
         super();
         this.canvas = document.createElement('canvas');
-        this.canvas.style.position = "fixed";  
-        this.canvas.style.top = "0";          
-        this.canvas.style.left = "0";         
-        this.canvas.style.width = "100%";     
-        this.canvas.style.height = "100%";    
+        this.canvas.style.position = "fixed";
+        this.canvas.style.top = "0";
+        this.canvas.style.left = "0";
+        this.canvas.style.width = "100%";
+        this.canvas.style.height = "100%";
         this.canvas.style.zIndex = "1";
         this.ctx = this.canvas.getContext('2d')!;
         document.body.appendChild(this.canvas);
@@ -78,6 +78,9 @@ class PopTheBalloon extends Mv.Game {
         // Add buttons to composer
         this.composer.addButton(Mv.Buttons.home());
         this.composer.addButton(infoButton);
+
+        // Set score
+        this.composer.setScore(0)
 
         // Automatically start the game after composer.start() finished
         this.composer.start();
@@ -255,19 +258,19 @@ class PopTheBalloon extends Mv.Game {
     }
 
     private addScore(): void {
-        // Implementation will be provided by external library
+        this.composer?.addScore(1);
     }
 
     private showPoppedBalloon(x: number, y: number): void {
         // Create a temporary div for the pop animation
         const popElement = document.createElement('div');
         popElement.style.position = 'fixed';  // Changed to fixed
-        popElement.style.left = `${x - 25}px`;  
-        popElement.style.top = `${y - 25}px`;   
+        popElement.style.left = `${x - 25}px`;
+        popElement.style.top = `${y - 25}px`;
         popElement.style.backgroundColor = this.balloonColor;
         popElement.style.zIndex = '1000';  // Ensure it's above canvas
         popElement.className = 'pop-animation';
-        
+
         document.body.appendChild(popElement);
 
         // Remove the element after animation
@@ -275,7 +278,7 @@ class PopTheBalloon extends Mv.Game {
             if (popElement.parentNode) {  // Check if element still exists
                 document.body.removeChild(popElement);
             }
-        }, { once: true });  
+        }, { once: true });
     }
 
     private gameOver(): void {

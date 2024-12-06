@@ -34,6 +34,7 @@ export class Alpha extends Composer {
             .then(() => {
                 // layout buttons after resources are loaded
                 this.layoutButtons();
+                this.layoutScoreComponent();
                 this.layoutZoomControl();
                 // start game
                 this.game.start();
@@ -41,6 +42,12 @@ export class Alpha extends Composer {
             .catch((error) => {
                 console.error('Failed to load resources:', error);
             });
+    }
+    layoutScoreComponent() {
+        if (this.scoreComponent && this.topCenter) {
+            this.topCenter.appendChild(this.scoreComponent.element);
+            this.scoreComponent.animateShow();
+        }
     }
 
     async layoutButtons() {
