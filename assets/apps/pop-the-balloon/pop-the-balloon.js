@@ -600,8 +600,6 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     // Default size
     this.lives = 5;
     // Default number of lives
-    this.score = 0;
-    // Track balloons popped
     this.isGameActive = false;
     this.canvas = document.createElement("canvas");
     this.canvas.style.position = "fixed";
@@ -615,6 +613,23 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     this.popSound = document.createElement("audio");
     this.popSound.src = _PopTheBalloon.popSoundSrc;
     this.popSound.preload = "auto";
+    const style = document.createElement("style");
+    style.textContent = `
+            @keyframes popAnimation {
+                0% { transform: scale(1); opacity: 1; }
+                100% { transform: scale(2); opacity: 0; }
+            }
+            .pop-animation {
+                position: fixed;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                animation: popAnimation 0.3s ease-out forwards;
+                pointer-events: none;
+                z-index: 1000;
+            }
+        `;
+    document.head.appendChild(style);
     window.addEventListener("resize", this.onCanvasResize.bind(this));
     this.setupAndStartComposer();
     this.initInfoModal();
@@ -633,7 +648,6 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
   }
   newGame() {
     this.isGameActive = true;
-    this.score = 0;
     this.lives = 5;
     const boundHandler = this.handleCanvasInteraction.bind(this);
     this.canvas.addEventListener("click", (e) => {
@@ -748,10 +762,10 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
       y = mouseEvent.clientY - rect.top;
     }
     if (this.isPointInBalloon(x, y)) {
-      this.score++;
+      this.addScore();
       this.popSound.play();
       this.showPoppedBalloon(x, y);
-      (_a = this.composer) == null ? void 0 : _a.alert(`Great shot! Score: ${this.score}`);
+      (_a = this.composer) == null ? void 0 : _a.alert(`Great shot!`);
       this.newRound();
     } else {
       this.lives--;
@@ -763,31 +777,22 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
       }
     }
   }
+  addScore() {
+  }
   showPoppedBalloon(x, y) {
     const popElement = document.createElement("div");
-    popElement.style.position = "absolute";
+    popElement.style.position = "fixed";
     popElement.style.left = `${x - 25}px`;
     popElement.style.top = `${y - 25}px`;
-    popElement.style.width = "50px";
-    popElement.style.height = "50px";
     popElement.style.backgroundColor = this.balloonColor;
-    popElement.style.borderRadius = "50%";
-    popElement.style.animation = "pop 0.3s ease-out forwards";
-    if (!document.getElementById("popAnimationStyle")) {
-      const style = document.createElement("style");
-      style.id = "popAnimationStyle";
-      style.textContent = `
-                @keyframes pop {
-                    0% { transform: scale(1); opacity: 1; }
-                    100% { transform: scale(2); opacity: 0; }
-                }
-            `;
-      document.head.appendChild(style);
-    }
+    popElement.style.zIndex = "1000";
+    popElement.className = "pop-animation";
     document.body.appendChild(popElement);
-    setTimeout(() => {
-      document.body.removeChild(popElement);
-    }, 300);
+    popElement.addEventListener("animationend", () => {
+      if (popElement.parentNode) {
+        document.body.removeChild(popElement);
+      }
+    }, { once: true });
   }
   gameOver() {
     this.isGameActive = false;
@@ -829,7 +834,6 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     return `
             <div class="result-content">
                 <h2>Game Over!</h2>
-                <p>You popped ${this.score} balloons!</p>
                 <button onclick="game.startAgain()">Play Again</button>
             </div>
         `;
