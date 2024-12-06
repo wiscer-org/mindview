@@ -19,15 +19,25 @@ class PopTheBalloon extends Mv.Game {
     private score: number = 0;  // Track balloons popped
     private isGameActive: boolean = false;
     private _boundHandler: (e: MouseEvent | TouchEvent) => void;
+    private popSound: HTMLAudioElement;
+    private static popSoundSrc: string = 'https://www.soundjay.com/buttons/sounds/button-16.mp3';
 
     constructor() {
         super();
         this.canvas = document.createElement('canvas');
-        this.canvas.style.background = "blue";
-        this.canvas.style.position = "absolute";
+        this.canvas.style.position = "fixed";
+        this.canvas.style.top = "0";
+        this.canvas.style.left = "0";
+        this.canvas.style.width = "100%";
+        this.canvas.style.height = "100%";
         this.canvas.style.zIndex = "1";
         this.ctx = this.canvas.getContext('2d')!;
         document.body.appendChild(this.canvas);
+
+        // Initialize pop sound
+        this.popSound = document.createElement('audio');
+        this.popSound.src = PopTheBalloon.popSoundSrc;
+        this.popSound.preload = 'auto';
 
         // Setup event listeners
         window.addEventListener('resize', this.onCanvasResize.bind(this));
@@ -65,7 +75,6 @@ class PopTheBalloon extends Mv.Game {
         // this.canvas.addEventListener('click', boundHandler);
         // this.canvas.addEventListener('touchstart', boundHandler);
         this.canvas.addEventListener('click', (e) => {
-            alert('start bound handler');
             boundHandler(e);
         });
         this.canvas.addEventListener('touchstart', boundHandler);
@@ -192,8 +201,8 @@ class PopTheBalloon extends Mv.Game {
     }
 
     private handleCanvasInteraction(event: MouseEvent | TouchEvent): void {
-        alert('canvas event detecteed');
         event.preventDefault();
+        event.stopPropagation();
         if (!this.isGameActive) return;
 
         const rect = this.canvas.getBoundingClientRect();
@@ -211,6 +220,7 @@ class PopTheBalloon extends Mv.Game {
 
         if (this.isPointInBalloon(x, y)) {
             this.score++;
+            this.popSound.play();
             this.showPoppedBalloon(x, y);
             // this.moveBalloonRandomly();
             this.composer?.alert(`Great shot! Score: ${this.score}`);
@@ -228,7 +238,6 @@ class PopTheBalloon extends Mv.Game {
     }
 
     private showPoppedBalloon(x: number, y: number): void {
-        alert('balloon popped');
 
         // Create a temporary div for the pop animation
         const popElement = document.createElement('div');
@@ -296,7 +305,7 @@ class PopTheBalloon extends Mv.Game {
         throw new Error('Method not implemented.');
     }
     getAssetsToLoad(): string[] {
-        return [];
+        return [PopTheBalloon.popSoundSrc];
     }
     infoModal: Mv.Modal;
     resultModal: Mv.Modal;

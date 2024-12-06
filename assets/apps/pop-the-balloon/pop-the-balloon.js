@@ -194,6 +194,10 @@ var Loader = class {
         return this.loadCss(src);
       case "js":
         return this.loadScript(src);
+      case "mp3":
+      case "wav":
+      case "ogg":
+        return this.loadAudio(src);
       default:
         throw new Error(`Unsupported file type: ${fileExtension}`);
     }
@@ -227,6 +231,19 @@ var Loader = class {
           reject(error);
         };
         document.head.appendChild(script);
+      });
+    });
+  }
+  loadAudio(src) {
+    return __async(this, null, function* () {
+      return new Promise((resolve, reject) => {
+        const audio = new Audio(src);
+        audio.oncanplaythrough = () => {
+          resolve();
+        };
+        audio.onerror = (error) => {
+          reject(error);
+        };
       });
     });
   }
@@ -569,7 +586,7 @@ var Buttons = {
 document.addEventListener("DOMContentLoaded", () => {
   let game = new PopTheBalloon();
 });
-var PopTheBalloon = class extends Game {
+var _PopTheBalloon = class _PopTheBalloon extends Game {
   constructor() {
     super();
     this.canvasWidth = 0;
@@ -587,11 +604,17 @@ var PopTheBalloon = class extends Game {
     // Track balloons popped
     this.isGameActive = false;
     this.canvas = document.createElement("canvas");
-    this.canvas.style.background = "blue";
-    this.canvas.style.position = "absolute";
+    this.canvas.style.position = "fixed";
+    this.canvas.style.top = "0";
+    this.canvas.style.left = "0";
+    this.canvas.style.width = "100%";
+    this.canvas.style.height = "100%";
     this.canvas.style.zIndex = "1";
     this.ctx = this.canvas.getContext("2d");
     document.body.appendChild(this.canvas);
+    this.popSound = document.createElement("audio");
+    this.popSound.src = _PopTheBalloon.popSoundSrc;
+    this.popSound.preload = "auto";
     window.addEventListener("resize", this.onCanvasResize.bind(this));
     this.setupAndStartComposer();
     this.initInfoModal();
@@ -614,7 +637,6 @@ var PopTheBalloon = class extends Game {
     this.lives = 5;
     const boundHandler = this.handleCanvasInteraction.bind(this);
     this.canvas.addEventListener("click", (e) => {
-      alert("start bound handler");
       boundHandler(e);
     });
     this.canvas.addEventListener("touchstart", boundHandler);
@@ -711,8 +733,8 @@ var PopTheBalloon = class extends Game {
   }
   handleCanvasInteraction(event) {
     var _a, _b;
-    alert("canvas event detecteed");
     event.preventDefault();
+    event.stopPropagation();
     if (!this.isGameActive) return;
     const rect = this.canvas.getBoundingClientRect();
     let x, y;
@@ -727,6 +749,7 @@ var PopTheBalloon = class extends Game {
     }
     if (this.isPointInBalloon(x, y)) {
       this.score++;
+      this.popSound.play();
       this.showPoppedBalloon(x, y);
       (_a = this.composer) == null ? void 0 : _a.alert(`Great shot! Score: ${this.score}`);
       this.newRound();
@@ -741,7 +764,6 @@ var PopTheBalloon = class extends Game {
     }
   }
   showPoppedBalloon(x, y) {
-    alert("balloon popped");
     const popElement = document.createElement("div");
     popElement.style.position = "absolute";
     popElement.style.left = `${x - 25}px`;
@@ -797,7 +819,7 @@ var PopTheBalloon = class extends Game {
     throw new Error("Method not implemented.");
   }
   getAssetsToLoad() {
-    return [];
+    return [_PopTheBalloon.popSoundSrc];
   }
   initInfoModal() {
   }
@@ -819,3 +841,5 @@ var PopTheBalloon = class extends Game {
   onclickNextButton() {
   }
 };
+_PopTheBalloon.popSoundSrc = "https://www.soundjay.com/buttons/sounds/button-16.mp3";
+var PopTheBalloon = _PopTheBalloon;
