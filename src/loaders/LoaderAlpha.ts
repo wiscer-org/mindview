@@ -23,9 +23,16 @@ export class LoaderAlpha extends Loader {
         }
     }
 
-    async load(): Promise<void> {
+    async load(): Promise<void[]> {
         // Load resources
-        await super.load()
+        await super.load().catch(e => {
+            // Note: Eventhough this the result of Promise.all. But it somehow only return 1 error message.
+            // Display that 1 error message.
+            console.log(e);
+            let errorMsg = `Error loading ${e.target.tagName} from ${e.target.src}`;
+            console.error(errorMsg);
+            this.infoAlert?.textContent ? this.infoAlert.textContent = errorMsg : null;
+        });
 
         // Set the text, notify loading has finished
         this.infoAlert?.textContent ? this.infoAlert.textContent = 'assets loaded' : null;
@@ -35,6 +42,9 @@ export class LoaderAlpha extends Loader {
 
         // Hide and wait the loader HTML element after resources are loaded;
         await this.hide();
+
+        // Meaning all assets has been successfully loaded
+        return [];
     }
     async hideAnimation() {
         return new Promise<void>((resolve) => {

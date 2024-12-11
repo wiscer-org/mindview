@@ -18,7 +18,7 @@ export abstract class Loader {
         this.toLoadOnBackgrund.push(src);
     }
 
-    async load(): Promise<void> {
+    async load(): Promise<void[]> {
         // Add the element to DOM before loading
         if (this.element && this.element?.parentNode !== document.body) {
             document.body.appendChild(this.element);
@@ -27,12 +27,24 @@ export abstract class Loader {
         let promises: Promise<void>[] = this.toLoad.map((src) => {
             return this.mapTypeAndLoad(src);
         });
-        return new Promise((resolve, reject) => {
-            Promise.all(promises)
-                .then(() => {
-                    resolve();
-                }).catch((error) => reject(error));
-        })
+        // return new Promise((resolve, reject) => {
+        //     Promise.all(promises)
+        //         .then(() => {
+        //             resolve();
+        //         }).catch((error) => reject(error));
+        // })
+
+        console.log(`is promises array : ${Array.isArray(promises)}`);
+        Promise.all(promises).then((r) => {
+            console.log('success');
+            console.log(r);
+        }).catch(e => {
+            console.log(`${Array.isArray(e)}`)
+            console.log('promise all');
+            console.error(e);
+        });
+
+        return [];
     }
 
     async loadOnBackground(): Promise<void> {
