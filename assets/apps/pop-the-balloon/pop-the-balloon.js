@@ -243,11 +243,16 @@ var Loader = class {
       let promises = this.toLoad.map((src) => {
         return this.mapTypeAndLoad(src);
       });
-      return new Promise((resolve, reject) => {
-        Promise.all(promises).then(() => {
-          resolve();
-        }).catch((error) => reject(error));
+      console.log(`is promises array : ${Array.isArray(promises)}`);
+      Promise.all(promises).then((r) => {
+        console.log("success");
+        console.log(r);
+      }).catch((e) => {
+        console.log(`${Array.isArray(e)}`);
+        console.log("promise all");
+        console.error(e);
       });
+      return [];
     });
   }
   loadOnBackground() {
@@ -354,10 +359,17 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
   load() {
     return __async(this, null, function* () {
       var _a;
-      yield __superGet(_LoaderAlpha.prototype, this, "load").call(this);
+      yield __superGet(_LoaderAlpha.prototype, this, "load").call(this).catch((e) => {
+        var _a2;
+        console.log(e);
+        let errorMsg = `Error loading ${e.target.tagName} from ${e.target.src}`;
+        console.error(errorMsg);
+        ((_a2 = this.infoAlert) == null ? void 0 : _a2.textContent) ? this.infoAlert.textContent = errorMsg : null;
+      });
       ((_a = this.infoAlert) == null ? void 0 : _a.textContent) ? this.infoAlert.textContent = "assets loaded" : null;
       yield new Promise((r) => setTimeout(r, 400));
       yield this.hide();
+      return [];
     });
   }
   hideAnimation() {
