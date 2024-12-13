@@ -1,6 +1,7 @@
 import { Composer } from '../abstracts/Composer';
-import { Game } from '../abstracts/Game';
 import { LoaderAlpha } from '../loaders/LoaderAlpha';
+import { Game } from '../abstracts/Game';
+import { LivesComponents } from '../lives-components/index';
 import { Button } from '../abstracts/Button';
 import { HomeButton } from '../buttons/Home';
 import { InfoButton } from '../buttons/Info';
@@ -9,6 +10,11 @@ import { RefreshButton } from '../buttons/Refresh';
 import Toaster from '../alerts/Toaster';
 
 export class Alpha extends Composer {
+    initLivesComponentIfNeeded(): void {
+        if (!this.livesComponent) {
+            this.livesComponent = LivesComponents.alpha();
+        }
+    }
     private toaster: Toaster | undefined;
 
     /**
@@ -35,6 +41,7 @@ export class Alpha extends Composer {
                 // layout buttons after resources are loaded
                 this.layoutButtons();
                 this.layoutScoreComponent();
+                this.layoutLivesComponent();
                 this.layoutZoomControl();
                 // start game
                 this.game.start();
@@ -43,6 +50,12 @@ export class Alpha extends Composer {
                 console.error('Failed to load resources:', error);
             });
     }
+    layoutLivesComponent() {
+        if (this.livesComponent && this.topRight) {
+            this.topRight.appendChild(this.livesComponent.element);
+        }
+    }
+
     layoutScoreComponent() {
         if (this.scoreComponent && this.topCenter) {
             this.topCenter.appendChild(this.scoreComponent.element);

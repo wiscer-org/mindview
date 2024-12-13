@@ -166,14 +166,14 @@ Lighter Green: #00A000 */
 /* lives (hearts) container */
 #lives-c {
     font-size: 30px;
-}
-
-/* Lives display styling */
-.lives-display {
     font-family: 'Luckiest Guy', cursive;
     color: #FF4500;
     text-shadow: -2px 2px 4px #000;
     position: relative;
+    display: inline-block;
+}
+
+#lives-c>* {
     display: inline-block;
 }
 
@@ -187,10 +187,12 @@ Lighter Green: #00A000 */
         transform: scale(1);
         opacity: 1;
     }
+
     50% {
-        transform: scale(1.5);
+        transform: scale(2.5);
         opacity: 0.7;
     }
+
     100% {
         transform: scale(1);
         opacity: 1;
@@ -207,6 +209,7 @@ Lighter Green: #00A000 */
         opacity: 0;
         transform: translateY(-10px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);

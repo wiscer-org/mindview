@@ -3,8 +3,11 @@ import { Button } from './Button';
 import { Game } from './Game';
 import { ScoreComponent } from './ScoreComponent';
 import { ScoreComponents } from '../score-components/index';
+import { LivesComponent } from './LivesComponent';
+import { LivesComponents } from '../lives-components/index';
 
 export abstract class Composer {
+
     // Assets to be loaded
     protected assetsToLoad: Promise<void>[] = [];
 
@@ -106,5 +109,38 @@ export abstract class Composer {
     public getScore(): number {
         this.initScoreComponentIfNeeded();
         return this.scoreComponent?.getScore() ?? 0;
+    }
+    /**
+     * Lives Component
+     */
+    livesComponent: LivesComponent | undefined;
+    useLivesComponent() {
+        this.initLivesComponentIfNeeded();
+    }
+
+    abstract initLivesComponentIfNeeded(): void;
+
+    /**
+     * Set number of lives, usually at the start of the game
+     * If not set, will use default lives in the lives component implementation.
+     */
+    public setInitialLives(lives: number): void {
+        console.log(`Composer: setInitialLives: ${lives}`);
+        this.initLivesComponentIfNeeded();
+        this.livesComponent?.setInitialLives(lives);
+    }
+    /**
+     * Get the current lives
+     */
+    public getLives(): number {
+        this.initLivesComponentIfNeeded();
+        return this.livesComponent?.getLives() ?? 0;
+    }
+    /**
+     *  Lose lives
+     */
+    public async loseLives(amount: number = 1): Promise<void> {
+        this.initLivesComponentIfNeeded();
+        return this.livesComponent?.loseLife(amount);
     }
 }

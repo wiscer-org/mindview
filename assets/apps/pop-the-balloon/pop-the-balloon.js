@@ -163,6 +163,37 @@ var Composer = class {
     this.initScoreComponentIfNeeded();
     return (_b = (_a = this.scoreComponent) == null ? void 0 : _a.getScore()) != null ? _b : 0;
   }
+  useLivesComponent() {
+    this.initLivesComponentIfNeeded();
+  }
+  /**
+   * Set number of lives, usually at the start of the game
+   * If not set, will use default lives in the lives component implementation.
+   */
+  setInitialLives(lives) {
+    var _a;
+    console.log(`Composer: setInitialLives: ${lives}`);
+    this.initLivesComponentIfNeeded();
+    (_a = this.livesComponent) == null ? void 0 : _a.setInitialLives(lives);
+  }
+  /**
+   * Get the current lives
+   */
+  getLives() {
+    var _a, _b;
+    this.initLivesComponentIfNeeded();
+    return (_b = (_a = this.livesComponent) == null ? void 0 : _a.getLives()) != null ? _b : 0;
+  }
+  /**
+   *  Lose lives
+   */
+  loseLives(amount = 1) {
+    return __async(this, null, function* () {
+      var _a;
+      this.initLivesComponentIfNeeded();
+      return (_a = this.livesComponent) == null ? void 0 : _a.loseLife(amount);
+    });
+  }
 };
 
 // src/abstracts/Button.ts
@@ -392,6 +423,168 @@ var LoaderAlpha = class _LoaderAlpha extends Loader {
   }
 };
 
+// src/abstracts/LivesComponent.ts
+var LivesComponent = class {
+  constructor() {
+    this.initialLives = 7;
+    // Default initial / starting lives
+    this.lives = this.initialLives;
+    this.element = document.createElement("div");
+  }
+  getLives() {
+    return this.lives;
+  }
+  loseLife(lives = 1) {
+    return __async(this, null, function* () {
+      let prevLives = this.lives;
+      this.lives = Math.max(0, this.lives - lives);
+      return this.animateLivesUpdate(prevLives, -lives);
+    });
+  }
+  addLife(lives = 1) {
+    return __async(this, null, function* () {
+      let prevLives = this.lives;
+      return this.animateLivesUpdate(prevLives, lives);
+    });
+  }
+  setInitialLives(lives) {
+    return __async(this, null, function* () {
+      this.lives = this.initialLives = Math.max(0, lives);
+      return this.animateShowInitialLive(lives);
+    });
+  }
+};
+
+// src/lives-components/LivesAlpha.ts
+var LivesAlpha = class extends LivesComponent {
+  constructor() {
+    super();
+    this.element.id = "lives-c";
+  }
+  /**
+   * Animate the show of the container of the initial lives.
+   * Lives has not been given, only the container. Should be called at the start of the game.
+   * This is useful to show the initial lives that given, represented by empty heart icons.
+   * @returns Promise<void>
+   */
+  delete_animateShowInitialLives() {
+    return __async(this, null, function* () {
+      var _a;
+      for (let i = 0; i < this.initialLives; i++) {
+        let heart = document.createElement("div");
+        heart.innerHTML = "\u{1F90D}";
+        (_a = this.element) == null ? void 0 : _a.prepend(heart);
+      }
+      return new Promise((resolve) => {
+        this.element.addEventListener("animationend", () => {
+          this.element.classList.remove("fade-in");
+          resolve();
+        }, { once: true });
+      });
+    });
+  }
+  animateLivesAdded(addedLives) {
+    return __async(this, null, function* () {
+      const animationClass = "pulse";
+      console.log("Animate lives added. addedLives: " + addedLives);
+      for (let i = 0; i < addedLives; i++) {
+        let heart = this.createLivesElement();
+        heart.classList.add(animationClass);
+        const lastEmptyHeart = this.element.querySelector(":scope > .empty:last-child");
+        if (lastEmptyHeart) {
+          lastEmptyHeart.remove();
+        }
+        yield new Promise((resolve) => setTimeout(resolve, 300));
+        this.element.prepend(heart);
+      }
+      return new Promise((resolve) => {
+        this.element.addEventListener("animationend", () => {
+          this.element.classList.remove("pulse");
+          resolve();
+        }, { once: true });
+      });
+    });
+  }
+  /**
+   * Animate lives has been lost
+   * @param lostLives 
+   */
+  animateLivesLost(lostLives) {
+    return __async(this, null, function* () {
+      var _a;
+      for (let i = 0; i < lostLives; i++) {
+        let heart = this.createLostLivesElement();
+        heart.classList.add("fade-out");
+        (_a = this.element.querySelector(":not(.empty)")) == null ? void 0 : _a.remove();
+        this.element.prepend(heart);
+      }
+      return new Promise((resolve) => {
+        this.element.addEventListener("animationend", () => {
+          this.element.classList.remove("fade-out");
+          resolve();
+        }, { once: true });
+      });
+    });
+  }
+  createLostLivesElement() {
+    let heart = this.createLivesElement();
+    heart.classList.add("empty");
+    heart.innerHTML = "\u{1F90D}";
+    return heart;
+  }
+  createLivesElement() {
+    let heart = document.createElement("div");
+    heart.innerHTML = "\u2764\uFE0F";
+    return heart;
+  }
+  /**
+   * Update the disply of lives changes, could be added or lost
+   * @param currentLives Current number of lives
+   * @param diffLives Lives difference. Positive for added, negative for lost
+   * @returns Promise<void>
+   */
+  animateLivesUpdate(currentLives, diffLives) {
+    return __async(this, null, function* () {
+      this.redrawHeartsIfNeeded(currentLives);
+      console.log("Animate lives update. currentLives: " + currentLives + ", diffLives: " + diffLives);
+      if (diffLives > 0) {
+        return this.animateLivesAdded(diffLives);
+      } else if (diffLives < 0) {
+        return this.animateLivesLost(-diffLives);
+      } else {
+        return Promise.reject("Lives difference must not be 0");
+      }
+    });
+  }
+  /**
+   * Will redraw the hearts if there is a difference between the current lives and the number of hearts existing in the element
+   * No animation.
+   * @param currentLives Current number of lives
+   */
+  redrawHeartsIfNeeded(currentLives) {
+    let currentHearts = this.element.querySelectorAll(":not(.empty)").length;
+    console.log("Redraw hearts. currentHearts: " + currentHearts);
+    if (currentHearts !== currentLives) {
+      for (let i = 0; i < currentLives; i++) {
+        let heart = this.createLivesElement();
+        this.element.prepend(heart);
+      }
+    }
+  }
+  animateShowInitialLive(lives) {
+    return __async(this, null, function* () {
+      return this.animateLivesUpdate(0, lives);
+    });
+  }
+};
+
+// src/lives-components/index.ts
+var LivesComponents = {
+  alpha() {
+    return new LivesAlpha();
+  }
+};
+
 // src/buttons/Home.ts
 var HomeButton = class extends Button {
   constructor() {
@@ -485,6 +678,11 @@ var Toaster_default = Toaster;
 
 // src/composers/Alpha.ts
 var Alpha = class extends Composer {
+  initLivesComponentIfNeeded() {
+    if (!this.livesComponent) {
+      this.livesComponent = LivesComponents.alpha();
+    }
+  }
   /**
    * Start everything
    */
@@ -501,11 +699,17 @@ var Alpha = class extends Composer {
     loader.load().then(() => {
       this.layoutButtons();
       this.layoutScoreComponent();
+      this.layoutLivesComponent();
       this.layoutZoomControl();
       this.game.start();
     }).catch((error) => {
       console.error("Failed to load resources:", error);
     });
+  }
+  layoutLivesComponent() {
+    if (this.livesComponent && this.topRight) {
+      this.topRight.appendChild(this.livesComponent.element);
+    }
   }
   layoutScoreComponent() {
     if (this.scoreComponent && this.topCenter) {
@@ -690,8 +894,7 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     this.balloonColor = "#ff0000";
     // Default red color
     this.balloonSize = 3;
-    // Default size
-    this.lives = 5;
+    this.lives = _PopTheBalloon.initialLives;
     // Default number of lives
     this.isGameActive = false;
     this.canvas = document.createElement("canvas");
@@ -737,12 +940,14 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
       this.composer.addButton(Buttons.home());
       this.composer.addButton(infoButton);
       this.composer.setScore(0);
+      this.composer.useLivesComponent();
       this.composer.start();
     });
   }
   newGame() {
-    this.isGameActive = true;
-    this.lives = 5;
+    var _a, _b;
+    (_a = this.composer) == null ? void 0 : _a.setInitialLives(_PopTheBalloon.initialLives);
+    (_b = this.composer) == null ? void 0 : _b.setScore(0);
     const boundHandler = this.handleCanvasInteraction.bind(this);
     this.canvas.addEventListener("click", (e) => {
       boundHandler(e);
@@ -819,7 +1024,8 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     this.ctx.closePath();
   }
   moveBalloonRandomly() {
-    if (this.lives > 0) {
+    var _a;
+    if (((_a = this.composer) == null ? void 0 : _a.getLives) && this.composer.getLives() > 0) {
       this.randomizeBalloonCenter();
       this.redrawBalloon();
     }
@@ -941,5 +1147,7 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
   onclickNextButton() {
   }
 };
+// Default size
+_PopTheBalloon.initialLives = 4;
 _PopTheBalloon.popSoundSrc = "https://www.soundjay.com/buttons/sounds/button-16.mp3";
 var PopTheBalloon = _PopTheBalloon;

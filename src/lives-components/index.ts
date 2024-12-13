@@ -1,5 +1,9 @@
 import { LivesAlpha } from './LivesAlpha';
 
-export const Lives = {
-    Alpha: LivesAlpha
+export const LivesComponents = {
+    alpha() {
+        return new LivesAlpha();
+    },
 };
+
+
