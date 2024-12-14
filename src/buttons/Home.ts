@@ -6,11 +6,11 @@ export class HomeButton extends Button {
         super('', 'fa-home', {
             id: 'home-button',
             'ariaLabel': 'MindView home',
-            onclick: () => this.onClick,
+            onclick: () => this.onclick(),
         });
     }
 
-    onClick(): void {
+    onclick(): void {
         window.location.href = '/';
     }
 }
