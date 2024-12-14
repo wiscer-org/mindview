@@ -45,6 +45,8 @@ var ScoreComponent = class {
     this.score = 0;
     this.element = document.createElement("div");
     this.element.textContent = this.score.toString();
+    this.element.id = "score";
+    this.element.classList.add("fiery-text");
   }
   getScore() {
     return this.score;
@@ -53,8 +55,13 @@ var ScoreComponent = class {
     this.score++;
     this.animateScoreUpdate();
   }
+  /**
+   * Set score. Usually called at the start of new game
+   * @param score 
+   */
   setScore(score) {
     this.score = score;
+    this.animateShow();
   }
 };
 
@@ -63,15 +70,31 @@ var ScoreAlpha = class extends ScoreComponent {
   constructor() {
     super();
   }
+  /**
+   * Animation to show score. Usually at start of a new game.
+   * @returns 
+   */
   animateShow() {
-    return Promise.resolve();
-  }
-  animateScoreUpdate() {
     this.element.textContent = this.score.toString();
     this.element.classList.add("pop-in");
     return new Promise((resolve) => {
       this.element.addEventListener("animationend", () => {
         this.element.classList.remove("pop-in");
+        resolve();
+      });
+    });
+  }
+  /**
+   * Animation to update score. Usually when the score changes.
+   * @returns Promise<void>
+   */
+  animateScoreUpdate() {
+    this.element.textContent = this.score.toString();
+    const animationClass = "pop";
+    this.element.classList.add(animationClass);
+    return new Promise((resolve) => {
+      this.element.addEventListener("animationend", () => {
+        this.element.classList.remove(animationClass);
         resolve();
       });
     });
@@ -141,6 +164,10 @@ var Composer = class {
     const container = document.createElement("div");
     container.classList.add("f-c");
     return container;
+  }
+  // Initialize score component
+  useScoreComponent() {
+    this.initScoreComponentIfNeeded();
   }
   initScoreComponentIfNeeded() {
     if (!this.scoreComponent) {
@@ -494,7 +521,7 @@ var LivesAlpha = class extends LivesComponent {
         if (lastEmptyHeart) {
           lastEmptyHeart.remove();
         }
-        yield new Promise((resolve) => setTimeout(resolve, 300));
+        yield new Promise((resolve) => setTimeout(resolve, 200));
         this.element.prepend(heart);
       }
       return new Promise((resolve) => {
@@ -939,7 +966,7 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
       });
       this.composer.addButton(Buttons.home());
       this.composer.addButton(infoButton);
-      this.composer.setScore(0);
+      this.composer.useScoreComponent();
       this.composer.useLivesComponent();
       this.composer.start();
     });
@@ -1148,6 +1175,6 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
   }
 };
 // Default size
-_PopTheBalloon.initialLives = 4;
+_PopTheBalloon.initialLives = 5;
 _PopTheBalloon.popSoundSrc = "https://www.soundjay.com/buttons/sounds/button-16.mp3";
 var PopTheBalloon = _PopTheBalloon;

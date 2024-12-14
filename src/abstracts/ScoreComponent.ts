@@ -5,6 +5,8 @@ export abstract class ScoreComponent {
     protected score: number = 0;
     constructor() {
         this.element.textContent = this.score.toString();
+        this.element.id = "score";
+        this.element.classList.add('fiery-text');
     }
 
     public getScore(): number {
@@ -16,8 +18,13 @@ export abstract class ScoreComponent {
         // Update visual
         this.animateScoreUpdate();
     }
+    /**
+     * Set score. Usually called at the start of new game
+     * @param score 
+     */
     public setScore(score: number): void {
         this.score = score;
+        this.animateShow();
     }
     element: HTMLDivElement = document.createElement('div');
     /**

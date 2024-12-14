@@ -15,7 +15,7 @@ class PopTheBalloon extends Mv.Game {
     private balloonCenter: { x: number; y: number } = { x: 0, y: 0 };
     private balloonColor: string = '#ff0000';  // Default red color
     private balloonSize: number = 3;  // Default size
-    private static initialLives: number = 4;
+    private static initialLives: number = 5;
     private lives: number = PopTheBalloon.initialLives;  // Default number of lives
     private isGameActive: boolean = false;
     private _boundHandler: (e: MouseEvent | TouchEvent) => void;
@@ -80,8 +80,8 @@ class PopTheBalloon extends Mv.Game {
         this.composer.addButton(Mv.Buttons.home());
         this.composer.addButton(infoButton);
 
-        // Set score
-        this.composer.setScore(0)
+        // Init Score component
+        this.composer.useScoreComponent();
 
         // Init lives component
         this.composer.useLivesComponent();
@@ -91,6 +91,7 @@ class PopTheBalloon extends Mv.Game {
     }
 
     newGame(): void {
+        // Set initial lives and score
         this.composer?.setInitialLives(PopTheBalloon.initialLives);
         this.composer?.setScore(0);
 

@@ -53,7 +53,7 @@ export class LivesAlpha extends LivesComponent {
                 lastEmptyHeart.remove();
             }
 
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 200));
 
             // Append the new heart
             this.element.prepend(heart);

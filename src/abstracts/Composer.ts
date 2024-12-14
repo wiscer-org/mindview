@@ -10,7 +10,6 @@ export abstract class Composer {
 
     // Assets to be loaded
     protected assetsToLoad: Promise<void>[] = [];
-
     constructor(protected game: Game) {
         game.setComposer(this);
 
@@ -89,8 +88,15 @@ export abstract class Composer {
         return container;
     }
 
-    // Start of score component releated code
+    /**
+     * Start of score component related code
+     */
     protected scoreComponent: ScoreComponent | undefined;
+
+    // Initialize score component
+    useScoreComponent() {
+        this.initScoreComponentIfNeeded();
+    }
 
     initScoreComponentIfNeeded() {
         if (!this.scoreComponent) {
