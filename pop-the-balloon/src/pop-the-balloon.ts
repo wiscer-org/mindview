@@ -310,6 +310,7 @@ class PopTheBalloon extends Mv.Game {
         throw new Error('Method not implemented.');
     }
     start(): void {
+        this.infoModal.show();
         this.onCanvasResize();
         this.newGame();
     }
@@ -329,6 +330,10 @@ class PopTheBalloon extends Mv.Game {
     resultModal: Mv.Modal;
 
     initInfoModal() {
+        this.infoModal = Mv.Modals.alpha({
+            title: 'Pop the Balloon Game',
+            content: '<p>Objective of this game is to pop the balloon.</p><p>If screen reader is activated, click on the "Result" button to let screen reader read the current colors.</p>'
+        }, []);
     }
 
     initResultModal() {
@@ -344,6 +349,7 @@ class PopTheBalloon extends Mv.Game {
     }
 
     infoButtonOnclick() {
+        this.infoModal.show();
     }
 
     resultButtonOnclick() {
