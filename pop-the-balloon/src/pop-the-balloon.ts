@@ -66,6 +66,14 @@ class PopTheBalloon extends Mv.Game {
 
         this.initInfoModal();
         this.initResultModal();
+
+        // Add listener to detect click / touch - bind the method to maintain context
+        const boundHandler = this.handleCanvasInteraction.bind(this);
+        this.canvas.addEventListener('click', boundHandler);
+        this.canvas.addEventListener('touchstart', boundHandler);
+
+        // Store the bound handler for later removal
+        this._boundHandler = boundHandler;
     }
 
     private async setupAndStartComposer() {
@@ -96,18 +104,6 @@ class PopTheBalloon extends Mv.Game {
         // Set initial lives and score
         this.composer?.setInitialLives(PopTheBalloon.initialLives);
         this.composer?.setScore(0);
-
-        // Add listener to detect click / touch - bind the method to maintain context
-        const boundHandler = this.handleCanvasInteraction.bind(this);
-        // this.canvas.addEventListener('click', boundHandler);
-        // this.canvas.addEventListener('touchstart', boundHandler);
-        this.canvas.addEventListener('click', (e) => {
-            boundHandler(e);
-        });
-        this.canvas.addEventListener('touchstart', boundHandler);
-
-        // Store the bound handler for later removal
-        this._boundHandler = boundHandler;
 
         this.newRound();
     }
@@ -229,6 +225,7 @@ class PopTheBalloon extends Mv.Game {
     }
 
     private handleCanvasInteraction(event: MouseEvent | TouchEvent): void {
+        alert('handle canvas interaction');
         event.preventDefault();
         event.stopPropagation();
         if (!this.isGameActive) return;
@@ -307,10 +304,10 @@ class PopTheBalloon extends Mv.Game {
         this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
         // Remove event listeners using the stored bound handler
-        if (this._boundHandler) {
-            this.canvas.removeEventListener('click', this._boundHandler);
-            this.canvas.removeEventListener('touchstart', this._boundHandler);
-        }
+        // if (this._boundHandler) {
+        //     this.canvas.removeEventListener('click', this._boundHandler);
+        //     this.canvas.removeEventListener('touchstart', this._boundHandler);
+        // }
     }
 
     startAgain(): void {

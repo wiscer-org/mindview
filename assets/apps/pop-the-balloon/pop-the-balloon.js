@@ -2216,6 +2216,10 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     this.setupAndStartComposer();
     this.initInfoModal();
     this.initResultModal();
+    const boundHandler = this.handleCanvasInteraction.bind(this);
+    this.canvas.addEventListener("click", boundHandler);
+    this.canvas.addEventListener("touchstart", boundHandler);
+    this._boundHandler = boundHandler;
   }
   setupAndStartComposer() {
     return __async(this, null, function* () {
@@ -2235,12 +2239,6 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     this.isGameActive = true;
     (_a = this.composer) == null ? void 0 : _a.setInitialLives(_PopTheBalloon.initialLives);
     (_b = this.composer) == null ? void 0 : _b.setScore(0);
-    const boundHandler = this.handleCanvasInteraction.bind(this);
-    this.canvas.addEventListener("click", (e) => {
-      boundHandler(e);
-    });
-    this.canvas.addEventListener("touchstart", boundHandler);
-    this._boundHandler = boundHandler;
     this.newRound();
   }
   newRound() {
@@ -2334,6 +2332,7 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
   }
   handleCanvasInteraction(event) {
     var _a, _b, _c;
+    alert("handle canvas interaction");
     event.preventDefault();
     event.stopPropagation();
     if (!this.isGameActive) return;
@@ -2395,10 +2394,6 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     this.resultModal.show();
     this.isGameActive = false;
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    if (this._boundHandler) {
-      this.canvas.removeEventListener("click", this._boundHandler);
-      this.canvas.removeEventListener("touchstart", this._boundHandler);
-    }
   }
   startAgain() {
     this.newGame();
