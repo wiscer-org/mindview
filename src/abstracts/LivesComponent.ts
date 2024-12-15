@@ -11,10 +11,17 @@ export abstract class LivesComponent {
     public getLives(): number {
         return this.lives;
     }
-
+    /**
+     * Called when loosing lives. Throw error if the remaining lives will less than zero.
+     * @param lives The number of lost lives.
+     * @returns 
+     */
     public async loseLife(lives: number = 1): Promise<void> {
         let prevLives = this.lives;
-        this.lives = Math.max(0, this.lives - lives);
+        this.lives = prevLives - lives;
+
+        // Throw error if the remaining lives will less than zero.
+        if (this.lives < 0) throw new Error("Remaining lives will less than zero.");
 
         return this.animateLivesUpdate(prevLives, -lives);
     }

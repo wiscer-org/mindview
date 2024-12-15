@@ -1694,10 +1694,16 @@ var LivesComponent = class {
   getLives() {
     return this.lives;
   }
+  /**
+   * Called when loosing lives. Throw error if the remaining lives will less than zero.
+   * @param lives The number of lost lives.
+   * @returns 
+   */
   loseLife(lives = 1) {
     return __async(this, null, function* () {
       let prevLives = this.lives;
-      this.lives = Math.max(0, this.lives - lives);
+      this.lives = prevLives - lives;
+      if (this.lives < 0) throw new Error("Remaining lives will less than zero.");
       return this.animateLivesUpdate(prevLives, -lives);
     });
   }
