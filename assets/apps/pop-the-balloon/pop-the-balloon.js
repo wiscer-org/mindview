@@ -2224,6 +2224,7 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
   }
   newGame() {
     var _a, _b;
+    this.isGameActive = true;
     (_a = this.composer) == null ? void 0 : _a.setInitialLives(_PopTheBalloon.initialLives);
     (_b = this.composer) == null ? void 0 : _b.setScore(0);
     const boundHandler = this.handleCanvasInteraction.bind(this);
@@ -2324,7 +2325,7 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     return isInOval || isInTriangle;
   }
   handleCanvasInteraction(event) {
-    var _a, _b;
+    var _a, _b, _c;
     event.preventDefault();
     event.stopPropagation();
     if (!this.isGameActive) return;
@@ -2346,14 +2347,19 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
       (_a = this.composer) == null ? void 0 : _a.alert(`Great shot!`);
       this.newRound();
     } else {
-      this.lives--;
-      if (this.lives <= 0) {
+      (_b = this.composer) == null ? void 0 : _b.loseLives(1);
+      let remainingLives = this.getLives();
+      if (remainingLives <= 0) {
         this.gameOver();
       } else {
-        (_b = this.composer) == null ? void 0 : _b.alert(`Missed! Lives remaining: ${this.lives}`);
+        (_c = this.composer) == null ? void 0 : _c.alert(`Missed! Lives remaining: ${remainingLives}`);
         this.newRound();
       }
     }
+  }
+  getLives() {
+    var _a;
+    return ((_a = this.composer) == null ? void 0 : _a.getLives()) || 0;
   }
   addScore() {
     var _a;
@@ -2375,10 +2381,12 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     }, { once: true });
   }
   gameOver() {
-    this.isGameActive = false;
-    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+    var _a;
+    (_a = this.composer) == null ? void 0 : _a.alert(`Game Over!`);
     this.resultModal.setContent(this.createResultModalContent());
     this.resultModal.show();
+    this.isGameActive = false;
+    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     if (this._boundHandler) {
       this.canvas.removeEventListener("click", this._boundHandler);
       this.canvas.removeEventListener("touchstart", this._boundHandler);
@@ -2414,14 +2422,19 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     }, []);
   }
   initResultModal() {
+    this.resultModal = Modals.alpha({
+      title: `Game Over`,
+      content: this.createResultModalContent()
+    }, [[Buttons.next({ onclick: this.onclickNextButton.bind(this) }), 0 /* callbackAndClose */]]);
   }
   createResultModalContent() {
     return `
-            <div class="result-content">
-                <h2>Game Over!</h2>
-                <button onclick="game.startAgain()">Play Again</button>
-            </div>
+            <p>Congrats! You popped ${this.getScore()} balloons.</p>
         `;
+  }
+  getScore() {
+    var _a;
+    return ((_a = this.composer) == null ? void 0 : _a.getScore()) || 0;
   }
   infoButtonOnclick() {
     this.infoModal.show();
@@ -2429,6 +2442,7 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
   resultButtonOnclick() {
   }
   onclickNextButton() {
+    this.newGame();
   }
 };
 // Default size

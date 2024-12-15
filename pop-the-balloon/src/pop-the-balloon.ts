@@ -91,6 +91,8 @@ class PopTheBalloon extends Mv.Game {
     }
 
     newGame(): void {
+        this.isGameActive = true;
+
         // Set initial lives and score
         this.composer?.setInitialLives(PopTheBalloon.initialLives);
         this.composer?.setScore(0);
@@ -252,15 +254,22 @@ class PopTheBalloon extends Mv.Game {
             this.composer?.alert(`Great shot!`);
             this.newRound();
         } else {
-            this.lives--;
-            if (this.lives <= 0) {
+            this.composer?.loseLives(1);
+            let remainingLives = this.getLives();
+
+            // Round out of lives
+            if (remainingLives <= 0) {
                 this.gameOver();
             } else {
-                this.composer?.alert(`Missed! Lives remaining: ${this.lives}`);
+                this.composer?.alert(`Missed! Lives remaining: ${remainingLives}`);
                 this.newRound();
             }
         }
 
+    }
+
+    private getLives() {
+        return this.composer?.getLives() || 0;
     }
 
     private addScore(): void {
@@ -288,12 +297,14 @@ class PopTheBalloon extends Mv.Game {
     }
 
     private gameOver(): void {
-        this.isGameActive = false;
-        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-
+        // Show alert
+        this.composer?.alert(`Game Over!`);
         // Update result modal content
         this.resultModal.setContent(this.createResultModalContent());
         this.resultModal.show();
+
+        this.isGameActive = false;
+        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
         // Remove event listeners using the stored bound handler
         if (this._boundHandler) {
@@ -337,15 +348,20 @@ class PopTheBalloon extends Mv.Game {
     }
 
     initResultModal() {
+        this.resultModal = Mv.Modals.alpha({
+            title: `Game Over`,
+            content: this.createResultModalContent()
+        }, [[Mv.Buttons.next({ onclick: this.onclickNextButton.bind(this) }), Mv.ModalButtonBehaviour.callbackAndClose]]);
     }
 
     createResultModalContent(): string {
         return `
-            <div class="result-content">
-                <h2>Game Over!</h2>
-                <button onclick="game.startAgain()">Play Again</button>
-            </div>
+            <p>Congrats! You popped ${this.getScore()} balloons.</p>
         `;
+    }
+
+    private getScore() {
+        return this.composer?.getScore() || 0;
     }
 
     infoButtonOnclick() {
@@ -356,5 +372,6 @@ class PopTheBalloon extends Mv.Game {
     }
 
     onclickNextButton() {
+        this.newGame();
     }
 }
