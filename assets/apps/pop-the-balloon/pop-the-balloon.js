@@ -1354,6 +1354,7 @@ var Modal = class {
     // focus-trap instance
     // If `closeable` is true, will add a close button on top and at the bottom
     this.closeable = true;
+    var _a;
     this.element = document.createElement("div");
     this.overlay = document.createElement("div");
     this.headerElement = document.createElement("div");
@@ -1368,6 +1369,7 @@ var Modal = class {
       }
     };
     Object.assign(this.element, attrs);
+    this.closeable = (_a = attrs.closeable) != null ? _a : this.closeable;
     this.element.setAttribute("role", "dialog");
     this.element.setAttribute("aria-modal", "true");
     if (attrs.title) {
@@ -2430,7 +2432,8 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
   initResultModal() {
     this.resultModal = Modals.alpha({
       title: `Game Over`,
-      content: this.createResultModalContent()
+      content: this.createResultModalContent(),
+      closeable: false
     }, [[Buttons.next({ onclick: this.onclickNextButton.bind(this) }), 0 /* callbackAndClose */]]);
   }
   createResultModalContent() {

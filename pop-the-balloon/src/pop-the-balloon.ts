@@ -350,7 +350,8 @@ class PopTheBalloon extends Mv.Game {
     initResultModal() {
         this.resultModal = Mv.Modals.alpha({
             title: `Game Over`,
-            content: this.createResultModalContent()
+            content: this.createResultModalContent(),
+            closeable: false,
         }, [[Mv.Buttons.next({ onclick: this.onclickNextButton.bind(this) }), Mv.ModalButtonBehaviour.callbackAndClose]]);
     }
 

@@ -53,6 +53,9 @@ export abstract class Modal {
         // this.element.className = 'modal';
         Object.assign(this.element, attrs);
 
+        //  Assign Modal Attributes to modal object (not element)
+        this.closeable = attrs.closeable ?? this.closeable;
+
         // Add ARIA attributes for accessibility
         this.element.setAttribute('role', 'dialog');
         this.element.setAttribute('aria-modal', 'true');
