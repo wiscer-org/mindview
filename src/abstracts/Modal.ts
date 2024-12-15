@@ -41,13 +41,6 @@ export abstract class Modal {
         this.closeButton = document.createElement('button');
         this.footerElement = document.createElement('footer')
 
-        // Set up overlay
-        this.overlay.className = 'modal-overlay';
-        this.overlay.onclick = (e) => {
-            if (e.target === this.overlay) {
-                this.close();
-            }
-        };
 
         // Set up modal container
         // this.element.className = 'modal';
@@ -55,6 +48,18 @@ export abstract class Modal {
 
         //  Assign Modal Attributes to modal object (not element)
         this.closeable = attrs.closeable ?? this.closeable;
+
+        // Set up overlay
+        this.overlay.className = 'modal-overlay';
+        // If `this.closeable` attach event handler that will close the modal
+        if (this.closeable) {
+            this.overlay.onclick = (e) => {
+                if (e.target === this.overlay) {
+                    this.close();
+                }
+            };
+        }
+
 
         // Add ARIA attributes for accessibility
         this.element.setAttribute('role', 'dialog');

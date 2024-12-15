@@ -225,7 +225,6 @@ class PopTheBalloon extends Mv.Game {
     }
 
     private handleCanvasInteraction(event: MouseEvent | TouchEvent): void {
-        alert('handle canvas interaction');
         event.preventDefault();
         event.stopPropagation();
         if (!this.isGameActive) return;

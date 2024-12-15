@@ -1362,14 +1362,16 @@ var Modal = class {
     this.titleElement = document.createElement("h1");
     this.closeButton = document.createElement("button");
     this.footerElement = document.createElement("footer");
-    this.overlay.className = "modal-overlay";
-    this.overlay.onclick = (e) => {
-      if (e.target === this.overlay) {
-        this.close();
-      }
-    };
     Object.assign(this.element, attrs);
     this.closeable = (_a = attrs.closeable) != null ? _a : this.closeable;
+    this.overlay.className = "modal-overlay";
+    if (this.closeable) {
+      this.overlay.onclick = (e) => {
+        if (e.target === this.overlay) {
+          this.close();
+        }
+      };
+    }
     this.element.setAttribute("role", "dialog");
     this.element.setAttribute("aria-modal", "true");
     if (attrs.title) {
@@ -2332,7 +2334,6 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
   }
   handleCanvasInteraction(event) {
     var _a, _b, _c;
-    alert("handle canvas interaction");
     event.preventDefault();
     event.stopPropagation();
     if (!this.isGameActive) return;
