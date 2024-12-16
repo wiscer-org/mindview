@@ -130,10 +130,9 @@ export abstract class Composer {
      * Set number of lives, usually at the start of the game
      * If not set, will use default lives in the lives component implementation.
      */
-    public setInitialLives(lives: number): void {
-        console.log(`Composer: setInitialLives: ${lives}`);
+    public async setInitialLives(lives: number): Promise<void> {
         this.initLivesComponentIfNeeded();
-        this.livesComponent?.setInitialLives(lives);
+        return this.livesComponent?.setInitialLives(lives);
     }
     /**
      * Get the current lives

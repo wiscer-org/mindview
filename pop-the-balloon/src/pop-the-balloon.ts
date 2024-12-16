@@ -98,13 +98,15 @@ class PopTheBalloon extends Mv.Game {
         this.composer.start();
     }
 
-    newGame(): void {
-        this.isGameActive = true;
+    async newGame(): Promise<void> {
+        this.isGameActive = false
 
-        // Set initial lives and score
-        this.composer?.setInitialLives(PopTheBalloon.initialLives);
+        // Set initial score
         this.composer?.setScore(0);
+        // Set initial lives & wait animation to finish
+        await this.composer?.setInitialLives(PopTheBalloon.initialLives);
 
+        this.isGameActive = true;
         this.newRound();
     }
 

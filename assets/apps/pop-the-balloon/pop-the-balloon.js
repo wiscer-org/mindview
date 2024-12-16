@@ -1269,10 +1269,11 @@ var Composer = class {
    * If not set, will use default lives in the lives component implementation.
    */
   setInitialLives(lives) {
-    var _a;
-    console.log(`Composer: setInitialLives: ${lives}`);
-    this.initLivesComponentIfNeeded();
-    (_a = this.livesComponent) == null ? void 0 : _a.setInitialLives(lives);
+    return __async(this, null, function* () {
+      var _a;
+      this.initLivesComponentIfNeeded();
+      return (_a = this.livesComponent) == null ? void 0 : _a.setInitialLives(lives);
+    });
   }
   /**
    * Get the current lives
@@ -2271,11 +2272,14 @@ var _PopTheBalloon = class _PopTheBalloon extends Game {
     });
   }
   newGame() {
-    var _a, _b;
-    this.isGameActive = true;
-    (_a = this.composer) == null ? void 0 : _a.setInitialLives(_PopTheBalloon.initialLives);
-    (_b = this.composer) == null ? void 0 : _b.setScore(0);
-    this.newRound();
+    return __async(this, null, function* () {
+      var _a, _b;
+      this.isGameActive = false;
+      (_a = this.composer) == null ? void 0 : _a.setScore(0);
+      yield (_b = this.composer) == null ? void 0 : _b.setInitialLives(_PopTheBalloon.initialLives);
+      this.isGameActive = true;
+      this.newRound();
+    });
   }
   newRound() {
     this.moveBalloonRandomly();
