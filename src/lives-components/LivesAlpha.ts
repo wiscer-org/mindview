@@ -6,6 +6,10 @@ import { LivesComponent } from '../abstracts/LivesComponent';
  * 
  */
 export class LivesAlpha extends LivesComponent {
+    /**
+     * Class name for the busy state, e.g.: doing animation, for the container element.
+     */
+    private static elementClassBusy = 'busy';
 
     constructor() {
         super();
@@ -39,13 +43,23 @@ export class LivesAlpha extends LivesComponent {
     protected async animateLivesAdded(addedLives: number): Promise<void> {
         const animationClass = 'pulse';
 
-        console.log("Animate lives added. addedLives: " + addedLives);
+        // Mark the element as busy
+        this.markElementBusy();
+        // Promises to be resolved whenever each animation ends
+        let animationPromises: Promise<void>[] = [];
 
         // Append 'hearts' to the lives display
         for (let i = 0; i < addedLives; i++) {
             let heart = this.createLivesElement();
             // Add `pulse` for animation
             heart.classList.add(animationClass);
+            // Add event handler for animation end
+            animationPromises.push(new Promise(resolve => {
+                heart.addEventListener('animationend', () => {
+                    heart.classList.remove(animationClass);
+                    resolve();
+                }, { once: true });
+            }));
 
             // Remove the last child of lost lives / empty heart
             const lastEmptyHeart = this.element.querySelector(':scope > .empty:last-child');
@@ -53,21 +67,44 @@ export class LivesAlpha extends LivesComponent {
                 lastEmptyHeart.remove();
             }
 
+            // Wait a little, before continue for the next heart animation
             await new Promise(resolve => setTimeout(resolve, 200));
 
             // Append the new heart
             this.element.prepend(heart);
-            // this.element.appendChild(heart);
         }
 
-        // Remove pulse class when animation ends
-        return new Promise(resolve => {
-            this.element.addEventListener('animationend', () => {
-                this.element.classList.remove('pulse');
-                resolve();
-            }, { once: true });
+        // Return new promise
+        return new Promise(async resolve => {
+            // Wait for all the hearts to finish animation
+            await Promise.all(animationPromises);
+
+            // Mark the element as not busy
+            this.markElementNotBusy();
+
+            resolve();
         });
+
+
+        // Remove pulse class when animation ends
+        // return new Promise(resolve => {
+        //     this.element.addEventListener('animationend', () => {
+        //         this.element.classList.remove('pulse');
+        //         resolve();
+        //     }, { once: true });
+        // });
     }
+    private isElementBusy() {
+        return this.element.classList.contains(LivesAlpha.elementClassBusy);
+    }
+    private markElementBusy() {
+        this.element.classList.add(LivesAlpha.elementClassBusy);
+    }
+
+    private markElementNotBusy() {
+        this.element.classList.remove(LivesAlpha.elementClassBusy);
+    }
+
     /**
      * Animate lives has been lost
      * @param lostLives 
@@ -115,9 +152,7 @@ export class LivesAlpha extends LivesComponent {
      */
     protected async animateLivesUpdate(currentLives: number, diffLives: number): Promise<void> {
         // Get the existing number of lives (non empty hearts)
-        this.redrawHeartsIfNeeded(currentLives);
-
-        console.log("Animate lives update. currentLives: " + currentLives + ", diffLives: " + diffLives);
+        // this.redrawHeartsIfNeeded(currentLives);
 
         // Do animation based on the difference	
         if (diffLives > 0) {
@@ -133,12 +168,37 @@ export class LivesAlpha extends LivesComponent {
      * No animation.
      * @param currentLives Current number of lives
      */
-    private redrawHeartsIfNeeded(currentLives: number) {
+    private async delete_redrawHeartsIfNeeded(currentLives: number): Promise<void> {
+        // Need to check if animation is currently going on and wait for it to end
+        if (this.isElementBusy()) {
+
+            // Define handler
+            const handler = async () => {
+
+                // Remove this event handler
+                this.element.removeEventListener('animationend', handler);
+
+                // If element is busy, return
+                if (!this.isElementBusy()) {
+                    this.delete_redrawHeartsIfNeeded(currentLives);
+                } else {
+                    return;
+                }
+            }
+
+            // Add event listener
+            this.element.addEventListener('animationend', () => {
+                handler();
+            }, { once: true });
+        }
+
+
         let currentHearts = this.element.querySelectorAll(':not(.empty)').length;
-        console.log("Redraw hearts. currentHearts: " + currentHearts);
 
         // Redraw hearts if there is a difference
         if (currentHearts !== currentLives) {
+            // Clear the container first
+            this.element.innerHTML = "";
             // No animation. Apply `currentLives`to the element. 
             for (let i = 0; i < currentLives; i++) {
                 let heart = this.createLivesElement();
@@ -147,7 +207,11 @@ export class LivesAlpha extends LivesComponent {
         }
     }
 
+
     protected async animateShowInitialLive(lives: number): Promise<void> {
+        // Empty the container first
+        this.element.innerHTML = "";
+
         return this.animateLivesUpdate(0, lives);
     }
 }

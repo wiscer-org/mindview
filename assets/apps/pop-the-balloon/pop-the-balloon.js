@@ -1726,7 +1726,7 @@ var LivesComponent = class {
 };
 
 // src/lives-components/LivesAlpha.ts
-var LivesAlpha = class extends LivesComponent {
+var _LivesAlpha = class _LivesAlpha extends LivesComponent {
   constructor() {
     super();
     this.element.id = "lives-c";
@@ -1756,10 +1756,17 @@ var LivesAlpha = class extends LivesComponent {
   animateLivesAdded(addedLives) {
     return __async(this, null, function* () {
       const animationClass = "pulse";
-      console.log("Animate lives added. addedLives: " + addedLives);
+      this.markElementBusy();
+      let animationPromises = [];
       for (let i = 0; i < addedLives; i++) {
         let heart = this.createLivesElement();
         heart.classList.add(animationClass);
+        animationPromises.push(new Promise((resolve) => {
+          heart.addEventListener("animationend", () => {
+            heart.classList.remove(animationClass);
+            resolve();
+          }, { once: true });
+        }));
         const lastEmptyHeart = this.element.querySelector(":scope > .empty:last-child");
         if (lastEmptyHeart) {
           lastEmptyHeart.remove();
@@ -1767,13 +1774,21 @@ var LivesAlpha = class extends LivesComponent {
         yield new Promise((resolve) => setTimeout(resolve, 200));
         this.element.prepend(heart);
       }
-      return new Promise((resolve) => {
-        this.element.addEventListener("animationend", () => {
-          this.element.classList.remove("pulse");
-          resolve();
-        }, { once: true });
-      });
+      return new Promise((resolve) => __async(this, null, function* () {
+        yield Promise.all(animationPromises);
+        this.markElementNotBusy();
+        resolve();
+      }));
     });
+  }
+  isElementBusy() {
+    return this.element.classList.contains(_LivesAlpha.elementClassBusy);
+  }
+  markElementBusy() {
+    this.element.classList.add(_LivesAlpha.elementClassBusy);
+  }
+  markElementNotBusy() {
+    this.element.classList.remove(_LivesAlpha.elementClassBusy);
   }
   /**
    * Animate lives has been lost
@@ -1815,8 +1830,6 @@ var LivesAlpha = class extends LivesComponent {
    */
   animateLivesUpdate(currentLives, diffLives) {
     return __async(this, null, function* () {
-      this.redrawHeartsIfNeeded(currentLives);
-      console.log("Animate lives update. currentLives: " + currentLives + ", diffLives: " + diffLives);
       if (diffLives > 0) {
         return this.animateLivesAdded(diffLives);
       } else if (diffLives < 0) {
@@ -1831,22 +1844,43 @@ var LivesAlpha = class extends LivesComponent {
    * No animation.
    * @param currentLives Current number of lives
    */
-  redrawHeartsIfNeeded(currentLives) {
-    let currentHearts = this.element.querySelectorAll(":not(.empty)").length;
-    console.log("Redraw hearts. currentHearts: " + currentHearts);
-    if (currentHearts !== currentLives) {
-      for (let i = 0; i < currentLives; i++) {
-        let heart = this.createLivesElement();
-        this.element.prepend(heart);
+  delete_redrawHeartsIfNeeded(currentLives) {
+    return __async(this, null, function* () {
+      if (this.isElementBusy()) {
+        const handler = () => __async(this, null, function* () {
+          this.element.removeEventListener("animationend", handler);
+          if (!this.isElementBusy()) {
+            this.delete_redrawHeartsIfNeeded(currentLives);
+          } else {
+            return;
+          }
+        });
+        this.element.addEventListener("animationend", () => {
+          handler();
+        }, { once: true });
       }
-    }
+      let currentHearts = this.element.querySelectorAll(":not(.empty)").length;
+      if (currentHearts !== currentLives) {
+        this.element.innerHTML = "";
+        for (let i = 0; i < currentLives; i++) {
+          let heart = this.createLivesElement();
+          this.element.prepend(heart);
+        }
+      }
+    });
   }
   animateShowInitialLive(lives) {
     return __async(this, null, function* () {
+      this.element.innerHTML = "";
       return this.animateLivesUpdate(0, lives);
     });
   }
 };
+/**
+ * Class name for the busy state, e.g.: doing animation, for the container element.
+ */
+_LivesAlpha.elementClassBusy = "busy";
+var LivesAlpha = _LivesAlpha;
 
 // src/lives-components/index.ts
 var LivesComponents = {
