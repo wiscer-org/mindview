@@ -1,6 +1,29 @@
 /**
  * This file contains the colors related statics or utility functions 
  */
+/**
+ * List of basic colors
+ */
+export const colors: string[] = [
+    "red",
+    "blue",
+    "green",
+    "yellow",
+    "orange",
+    "purple",
+    "pink",
+    "brown",
+    "gray",
+    "black",
+    "white",
+];
+/**
+ * Randomize c
+ */
+export function randomColor(): string {
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
 // Define pairs of similar colors
 export const similarColors: [string, string][] = [
     ["red", "pink"],
