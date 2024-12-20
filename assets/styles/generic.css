@@ -231,7 +231,7 @@ Lighter Green: #00A000 */
     100% {
         opacity: 0;
         transform: translateY(-20px);
-        scale: 4.5;
+        scale: 3;
     }
 }
 
