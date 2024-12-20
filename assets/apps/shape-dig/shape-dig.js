@@ -39133,10 +39133,9 @@ var _ShapeDig = class _ShapeDig extends Game {
     }, [[Buttons.next({ onclick: this.resultModalNextButtonOnclick.bind(this) }), 0 /* callbackAndClose */]]);
   }
   createResultModalContent() {
-    const score = 200;
     return `
     <h1>Game over</h1>
-    <p>Your scored is ${score} points.</p>
+    <p>Your scored is ${this.getScore()} points.</p>
         `;
   }
   initInfoModal() {
@@ -39158,13 +39157,15 @@ var _ShapeDig = class _ShapeDig extends Game {
       this.composer.addButton(Buttons.home());
       this.composer.addButton(infoButton);
       this.composer.useScoreComponent();
+      yield this.composer.useLivesComponent();
       this.composer.start();
     });
   }
   newGame() {
     return __async(this, null, function* () {
-      var _a2;
+      var _a2, _b;
       (_a2 = this.composer) == null ? void 0 : _a2.setScore(0);
+      yield (_b = this.composer) == null ? void 0 : _b.setInitialLives(5);
       yield this.regenerateShapes();
       this.newRound();
     });
@@ -39361,8 +39362,11 @@ var _ShapeDig = class _ShapeDig extends Game {
     return (_a2 = this.composer) == null ? void 0 : _a2.getScore();
   }
   falseSelect(graphics) {
-    var _a2;
-    (_a2 = this.composer) == null ? void 0 : _a2.alert(`Wrong shape! You chose ${graphics.shapeType}, should be ${this.selectedShapeType}. Try again.`);
+    return __async(this, null, function* () {
+      var _a2, _b;
+      yield (_a2 = this.composer) == null ? void 0 : _a2.loseLives();
+      (_b = this.composer) == null ? void 0 : _b.alert(`Wrong shape! You chose ${graphics.shapeType}, should be ${this.selectedShapeType}. Try again.`);
+    });
   }
 };
 _ShapeDig.numberOfShapesOnFirstDraw = 6;

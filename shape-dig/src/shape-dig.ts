@@ -107,12 +107,10 @@ class ShapeDig extends Mv.Game {
         }, [[Mv.Buttons.next({ onclick: this.resultModalNextButtonOnclick.bind(this) }), Mv.ModalButtonBehaviour.callbackAndClose]]);
     }
     createResultModalContent(): string {
-        // FIXME:
-        const score = 200;
 
         return `
     <h1>Game over</h1>
-    <p>Your scored is ${score} points.</p>
+    <p>Your scored is ${this.getScore()} points.</p>
         `;
     }
     initInfoModal() {
@@ -141,6 +139,9 @@ class ShapeDig extends Mv.Game {
         // Init Score component
         this.composer.useScoreComponent();
 
+        // Use lives component
+        await this.composer.useLivesComponent();
+
         // Automatically start the game after composer.start() finished
         this.composer.start();
     }
@@ -148,6 +149,7 @@ class ShapeDig extends Mv.Game {
     async newGame(): Promise<void> {
         // Initialize game state
         this.composer?.setScore(0);
+        await this.composer?.setInitialLives(5);
 
         // Set initial shapes
         await this.regenerateShapes();
@@ -411,9 +413,9 @@ class ShapeDig extends Mv.Game {
         return this.composer?.getScore();
     }
 
-    falseSelect(graphics) {
+    async falseSelect(graphics) {
         // Reduce life
-        // lives--;
+        await this.composer?.loseLives();
 
         // updateLivesDisplay();
 
