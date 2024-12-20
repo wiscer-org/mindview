@@ -113,22 +113,46 @@ export class LivesAlpha extends LivesComponent {
         // Iterate
         for (let i = 0; i < lostLives; i++) {
             let heart = this.createLostLivesElement();
-            heart.classList.add('fade-out');
 
             // Remove the first child of lives display that is not `.empty`
-            this.element.querySelector(':not(.empty)')?.remove();
+            let firstNonEmptyHeart = this.element.querySelector(':not(.empty)');
+            if (firstNonEmptyHeart) {
+                // After animation ends, remove the heart & append the empty heart
+                return new Promise(resolve => {
+                    firstNonEmptyHeart.addEventListener('animationend', () => {
+                        // Remove the heart
+                        firstNonEmptyHeart.remove();
+                        // Append the empty heart
+                        this.element.prepend(heart);
+
+                        resolve();
+                    }, { once: true });
+
+                    // Add animation class
+                    firstNonEmptyHeart.classList.add('fade-out');
+                });
+            } else {
+                // This scenario, where there is no hearts left, should never happen, but just in case
+                // Add empty heart
+                this.element.prepend(heart);
+                return Promise.resolve();
+            }
 
             // Prepend the empty heart
-            this.element.prepend(heart);
+            // this.element.prepend(heart);
+            // alert('before adding fade-out');
+            // heart.classList.add('fade-out');
         }
 
+        alert('before returning');
         // Remove fade-out class when animation ends
-        return new Promise(resolve => {
-            this.element.addEventListener('animationend', () => {
-                this.element.classList.remove('fade-out');
-                resolve();
-            }, { once: true });
-        });
+        // return new Promise(resolve => {
+        //     this.element.addEventListener('animationend', () => {
+        //         this.element.classList.remove('fade-out');
+        //         alert('after removing fade-out');
+        //         resolve();
+        //     }, { once: true });
+        // });
     }
 
     private createLostLivesElement() {
