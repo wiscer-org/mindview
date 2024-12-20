@@ -35,6 +35,8 @@ class ShapeDig extends Mv.Game {
         throw new Error('Method not implemented.');
     }
     async start(): Promise<void> {
+        document.body.style.backgroundColor = '#000';
+
         await this.initApp();
 
         this.newGame();

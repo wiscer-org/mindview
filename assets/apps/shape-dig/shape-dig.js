@@ -39093,6 +39093,7 @@ var _ShapeDig = class _ShapeDig extends Game {
   }
   start() {
     return __async(this, null, function* () {
+      document.body.style.backgroundColor = "#000";
       yield this.initApp();
       this.newGame();
       this.infoModal.show();
