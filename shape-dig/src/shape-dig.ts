@@ -380,6 +380,8 @@ class ShapeDig extends Mv.Game {
             // Remove the shape
             this.app.stage.removeChild(graphics);
 
+            // Generate new graphic with the same shape
+            this.app.stage.addChild(this.generateAGraphic(shapeType));
         } else {
             // Handle the click based on shape type
             this.shapeOnclickAfterFirst(graphics, shapeType);

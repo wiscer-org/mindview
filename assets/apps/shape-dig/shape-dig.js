@@ -39350,6 +39350,7 @@ var _ShapeDig = class _ShapeDig extends Game {
         this.selectedShapeType = shapeType;
         (_a2 = this.composer) == null ? void 0 : _a2.alert(`You selected ${shapeType}. Continue selecting ${shapeType}.`);
         this.app.stage.removeChild(graphics);
+        this.app.stage.addChild(this.generateAGraphic(shapeType));
       } else {
         this.shapeOnclickAfterFirst(graphics, shapeType);
       }
