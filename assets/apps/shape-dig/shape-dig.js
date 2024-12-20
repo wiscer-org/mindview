@@ -38423,22 +38423,24 @@ var _LivesAlpha = class _LivesAlpha extends LivesComponent {
    */
   animateLivesLost(lostLives) {
     return __async(this, null, function* () {
-      var _a2;
       for (let i2 = 0; i2 < lostLives; i2++) {
         let heart = this.createLostLivesElement();
-        (_a2 = this.element.querySelector(":not(.empty)")) == null ? void 0 : _a2.remove();
-        this.element.prepend(heart);
-        alert("before adding fade-out");
-        heart.classList.add("fade-out");
+        let firstNonEmptyHeart = this.element.querySelector(":not(.empty)");
+        if (firstNonEmptyHeart) {
+          return new Promise((resolve) => {
+            firstNonEmptyHeart.addEventListener("animationend", () => {
+              firstNonEmptyHeart.remove();
+              this.element.prepend(heart);
+              resolve();
+            }, { once: true });
+            firstNonEmptyHeart.classList.add("fade-out");
+          });
+        } else {
+          this.element.prepend(heart);
+          return Promise.resolve();
+        }
       }
       alert("before returning");
-      return new Promise((resolve) => {
-        this.element.addEventListener("animationend", () => {
-          this.element.classList.remove("fade-out");
-          alert("after removing fade-out");
-          resolve();
-        }, { once: true });
-      });
     });
   }
   createLostLivesElement() {
@@ -39093,6 +39095,7 @@ var _ShapeDig = class _ShapeDig extends Game {
     return __async(this, null, function* () {
       yield this.initApp();
       this.newGame();
+      this.infoModal.show();
     });
   }
   pause() {
@@ -39140,17 +39143,21 @@ var _ShapeDig = class _ShapeDig extends Game {
   }
   createResultModalContent() {
     return `
-    <h1>Game over</h1>
-    <p>Your scored is ${this.getScore()} points.</p>
+            <p>Your score is ${this.getScore()} points. Try again.</p>
         `;
   }
   initInfoModal() {
     this.infoModal = Modals.alpha({
       title: "Shape Dig Game",
       content: `
-            <p>Objective of this game is to tap the same shape, based on the first shape you tap.</p>
-            <p>So you are first free to tap on any shapes, then you need to follow the same shape.</p>
-            <p>You will get 1 point for every correct tap, and you have5 lives before the game is over.</p>
+            <p>
+                Objective of this game is to tap the same shape, based on the first shape you tap.
+                So you are first free to tap on any shapes, then you need to follow the same shape.
+            </p>
+            <p>
+                You will get 1 point for every correct tap, and you have 5 lives before the game is over.
+                Good luck!
+            </p>
             `
     }, []);
   }
@@ -39360,8 +39367,9 @@ var _ShapeDig = class _ShapeDig extends Game {
     }
   }
   correctSelect(graphics) {
-    var _a2;
-    (_a2 = this.composer) == null ? void 0 : _a2.alert(`Correct! You selected ${graphics.shapeType}. Your score now ${this.getScore()}`);
+    var _a2, _b;
+    (_a2 = this.composer) == null ? void 0 : _a2.addScore(1);
+    (_b = this.composer) == null ? void 0 : _b.alert(`Correct! You selected ${graphics.shapeType}. Your score now ${this.getScore()}`);
   }
   getScore() {
     var _a2;
@@ -39369,17 +39377,13 @@ var _ShapeDig = class _ShapeDig extends Game {
   }
   falseSelect(graphics) {
     return __async(this, null, function* () {
-      var _a2, _b, _c;
-      console.log("lose lives");
+      var _a2, _b;
       yield (_a2 = this.composer) == null ? void 0 : _a2.loseLives();
-      console.log("setting modal");
       this.resultModal.setContent(this.createResultModalContent());
-      console.log("false");
-      console.log((_b = this.composer) == null ? void 0 : _b.getLives());
       if (this.composer && this.composer.getLives() < 1) {
         this.end();
       } else {
-        (_c = this.composer) == null ? void 0 : _c.alert(`Wrong shape! You chose ${graphics.shapeType}, should be ${this.selectedShapeType}. Try again.`);
+        (_b = this.composer) == null ? void 0 : _b.alert(`Wrong shape! You chose ${graphics.shapeType}, should be ${this.selectedShapeType}. Try again.`);
       }
     });
   }

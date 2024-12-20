@@ -38,6 +38,9 @@ class ShapeDig extends Mv.Game {
         await this.initApp();
 
         this.newGame();
+
+        // Show info modal, to give info about he game to user.
+        this.infoModal.show();
     }
     pause(): void {
         throw new Error('Method not implemented.');
@@ -45,8 +48,8 @@ class ShapeDig extends Mv.Game {
     resume(): void {
         throw new Error('Method not implemented.');
     }
-    end(): void {
-        throw new Error('Method not implemented.');
+    async end(): Promise<void> {
+        await this.resultModal.show();
     }
     getAssetsToLoad(): string[] {
         return [];
@@ -109,17 +112,21 @@ class ShapeDig extends Mv.Game {
     createResultModalContent(): string {
 
         return `
-    <h1>Game over</h1>
-    <p>Your scored is ${this.getScore()} points.</p>
+            <p>Your score is ${this.getScore()} points. Try again.</p>
         `;
     }
     initInfoModal() {
         this.infoModal = Mv.Modals.alpha({
             title: 'Shape Dig Game',
             content: `
-            <p>Objective of this game is to tap the same shape, based on the first shape you tap.</p>
-            <p>So you are first free to tap on any shapes, then you need to follow the same shape.</p>
-            <p>You will get 1 point for every correct tap, and you have5 lives before the game is over.</p>
+            <p>
+                Objective of this game is to tap the same shape, based on the first shape you tap.
+                So you are first free to tap on any shapes, then you need to follow the same shape.
+            </p>
+            <p>
+                You will get 1 point for every correct tap, and you have 5 lives before the game is over.
+                Good luck!
+            </p>
             `
         }, []);
     }
@@ -405,6 +412,7 @@ class ShapeDig extends Mv.Game {
 
     correctSelect(graphics) {
         // increaseScore(1);
+        this.composer?.addScore(1);
 
         // Notify user
         this.composer?.alert(`Correct! You selected ${graphics.shapeType}. Your score now ${this.getScore()}`);
@@ -417,12 +425,17 @@ class ShapeDig extends Mv.Game {
         // Reduce life
         await this.composer?.loseLives();
 
-        // updateLivesDisplay();
+        // Update score related display
+        this.resultModal.setContent(this.createResultModalContent());
 
-        // Notify user
-        this.composer?.alert(`Wrong shape! You chose ${graphics.shapeType}, should be ${this.selectedShapeType}. Try again.`);
+        // Should the game end?
+        if (this.composer && this.composer.getLives() < 1) {
+            this.end();
+        } else {
+            // Notify user
+            this.composer?.alert(`Wrong shape! You chose ${graphics.shapeType}, should be ${this.selectedShapeType}. Try again.`);
+        }
     }
-
 
 
 }
