@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindView: Shape Dig</title>
+</head>
+
+<body>
+
+    <div class="reveal" id="intro-modal" data-reveal data-close-on-click="false">
+        <h2>Welcome to Shape Dig!</h2>
+        <p>
+            In this game, you'll need to identify and dig out shapes hidden beneath the surface.
+            Use your seeing-blindfolded skills to find the correct shapes and score points.
+            You have limited 5 lives before the game is over.
+        </p>
+        <p>Turn off the screen reader on your device to play this game.</p>
+        <button class="button expanded" onclick="closeModalAndStart()">Start Playing</button>
+    </div>
+
+    <div class="reveal" id="result-modal" data-reveal data-close-on-click="false">
+        <h2>Game Over</h2>
+        <p>You scored <span id="score"></span> points.</p>
+        <div id="result-actions">
+            <a id="result-to-homepage" class="button" href="../">Back to homepage</a>
+            <button id="result-next-game" class="button" onclick="closeResultModal()">Start Again</button>
+        </div>
+    </div>
+
+    <div id="control-container" class="grid-container control-container">
+        <div class="grid-x grid-padding-x align-middle align-center">
+            <div class="cell shrink">
+                <button id="control-to-homepage" class="button" onclick="window.location.href='../'">
+                    <i class="fi-home"></i> Home
+                </button>
+            </div>
+            <div class="cell shrink">
+                <div class="lives-display"></div>
+            </div>
+            <div class="cell shrink">
+                <span id="current-result"></span>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/js/foundation.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.3/pixi.min.js"></script>
+
+    <link rel="stylesheet" href="../style.css">
+    <script src="../lib.js"></script>
+    <script defer src="./shape-dig.js"></script>
+</body>
+
+</html>
