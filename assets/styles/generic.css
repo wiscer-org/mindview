@@ -216,6 +216,25 @@ Lighter Green: #00A000 */
     }
 }
 
+/* Fade out animation for lives display */
+.fade-out {
+    animation: fadeOut 0.5s ease-in;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+        scale: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+        scale: 4.5;
+    }
+}
+
 /* Customize the modal appearance */
 #settings-modal {
     max-width: 500px;

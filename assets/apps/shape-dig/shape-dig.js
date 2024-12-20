@@ -37906,6 +37906,7 @@ var Composer = class {
   getLives() {
     var _a2, _b;
     this.initLivesComponentIfNeeded();
+    if (!this.livesComponent) return -1;
     return (_b = (_a2 = this.livesComponent) == null ? void 0 : _a2.getLives()) != null ? _b : 0;
   }
   /**
@@ -38425,13 +38426,16 @@ var _LivesAlpha = class _LivesAlpha extends LivesComponent {
       var _a2;
       for (let i2 = 0; i2 < lostLives; i2++) {
         let heart = this.createLostLivesElement();
-        heart.classList.add("fade-out");
         (_a2 = this.element.querySelector(":not(.empty)")) == null ? void 0 : _a2.remove();
         this.element.prepend(heart);
+        alert("before adding fade-out");
+        heart.classList.add("fade-out");
       }
+      alert("before returning");
       return new Promise((resolve) => {
         this.element.addEventListener("animationend", () => {
           this.element.classList.remove("fade-out");
+          alert("after removing fade-out");
           resolve();
         }, { once: true });
       });
@@ -39098,7 +39102,9 @@ var _ShapeDig = class _ShapeDig extends Game {
     throw new Error("Method not implemented.");
   }
   end() {
-    throw new Error("Method not implemented.");
+    return __async(this, null, function* () {
+      yield this.resultModal.show();
+    });
   }
   getAssetsToLoad() {
     return [];
@@ -39363,9 +39369,18 @@ var _ShapeDig = class _ShapeDig extends Game {
   }
   falseSelect(graphics) {
     return __async(this, null, function* () {
-      var _a2, _b;
+      var _a2, _b, _c;
+      console.log("lose lives");
       yield (_a2 = this.composer) == null ? void 0 : _a2.loseLives();
-      (_b = this.composer) == null ? void 0 : _b.alert(`Wrong shape! You chose ${graphics.shapeType}, should be ${this.selectedShapeType}. Try again.`);
+      console.log("setting modal");
+      this.resultModal.setContent(this.createResultModalContent());
+      console.log("false");
+      console.log((_b = this.composer) == null ? void 0 : _b.getLives());
+      if (this.composer && this.composer.getLives() < 1) {
+        this.end();
+      } else {
+        (_c = this.composer) == null ? void 0 : _c.alert(`Wrong shape! You chose ${graphics.shapeType}, should be ${this.selectedShapeType}. Try again.`);
+      }
     });
   }
 };
