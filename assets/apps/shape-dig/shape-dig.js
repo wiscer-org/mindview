@@ -39260,8 +39260,8 @@ var _ShapeDig = class _ShapeDig extends Game {
   }
   generateAGraphic(shapeType) {
     const graphics = Object.assign(new Graphics(), { shapeType });
-    const x2 = Math.random() * (window.innerWidth - this.baseLength * 2) + this.baseLength * 1;
-    const y2 = Math.random() * (window.innerHeight - this.baseLength * 2) + this.baseLength * 1;
+    const x2 = Math.random() * (window.innerWidth - this.baseLength * 2) + this.baseLength;
+    const y2 = Math.random() * (window.innerHeight - this.baseLength * 4) + this.baseLength;
     const color = _ShapeDig.randomizeColorButWhite();
     switch (shapeType) {
       case "square":

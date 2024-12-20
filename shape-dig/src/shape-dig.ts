@@ -176,8 +176,6 @@ class ShapeDig extends Mv.Game {
 
         // Draw shape
         const graphic = this.generateAGraphic(shape);
-        // TODO determine graphic attach below has click handler or not
-        // this.app.stage.addChild(graphic);s
     }
     /**
      * Randomize basic color, except white
@@ -260,8 +258,8 @@ class ShapeDig extends Mv.Game {
         const graphics: GraphicShape = Object.assign(new PIXI.Graphics(), { shapeType: shapeType }); // new PIXI.Graphics();
 
         // Random position within window bounds
-        const x = Math.random() * (window.innerWidth - this.baseLength * 2) + this.baseLength * 1;
-        const y = Math.random() * (window.innerHeight - this.baseLength * 2) + this.baseLength * 1;
+        const x = Math.random() * (window.innerWidth - this.baseLength * 2) + this.baseLength;
+        const y = Math.random() * (window.innerHeight - this.baseLength * 4) + this.baseLength;
 
         // Random shape color
         const color = ShapeDig.randomizeColorButWhite();
@@ -373,15 +371,12 @@ class ShapeDig extends Mv.Game {
         if (!ShapeDig.shapeTypes.includes(this.selectedShapeType)) {
             // This is the first shape
             this.selectedShapeType = shapeType;
-            // TODO update all elements related to selectedShapeType
 
             // Notify the user
             this.composer?.alert(`You selected ${shapeType}. Continue selecting ${shapeType}.`);
 
             // Remove the shape
             this.app.stage.removeChild(graphics);
-
-            // TODO Add shapeGraphic withthe same shape 
 
         } else {
             // Handle the click based on shape type
@@ -403,11 +398,6 @@ class ShapeDig extends Mv.Game {
         } else {
             this.falseSelect(graphics);
         }
-
-        // End game if `lives` are no more
-        // TODO
-        // if (lives < 1) showResultModal();
-
     }
 
     correctSelect(graphics) {
