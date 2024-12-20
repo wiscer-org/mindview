@@ -27,8 +27,8 @@ class ShapeDig extends Mv.Game {
     /** 
      * Base length of the shapes. Will be recalculated upon window resize
      */
-    baseLength: number = 40;
-    static numberOfShapesOnFirstDraw: number = 6;
+    baseLength: number = 60;
+    static numberOfShapesOnFirstDraw: number = 50;
     selectedShapeType: string = 'none';
 
     init(): void {
@@ -340,7 +340,7 @@ class ShapeDig extends Mv.Game {
 
         // Set stroke and fill color
         graphics.stroke({
-            width: 6,
+            width: 12,
             color: 0x000000,
             alpha: 1,
         });

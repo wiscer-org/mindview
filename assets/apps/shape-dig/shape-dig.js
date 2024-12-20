@@ -39080,7 +39080,7 @@ var _ShapeDig = class _ShapeDig extends Game {
     /** 
      * Base length of the shapes. Will be recalculated upon window resize
      */
-    this.baseLength = 40;
+    this.baseLength = 60;
     this.selectedShapeType = "none";
     this.canvasWidth = 0;
     this.canvasHeight = 0;
@@ -39321,7 +39321,7 @@ var _ShapeDig = class _ShapeDig extends Game {
         break;
     }
     graphics.stroke({
-      width: 6,
+      width: 12,
       color: 0,
       alpha: 1
     });
@@ -39388,7 +39388,7 @@ var _ShapeDig = class _ShapeDig extends Game {
     });
   }
 };
-_ShapeDig.numberOfShapesOnFirstDraw = 6;
+_ShapeDig.numberOfShapesOnFirstDraw = 50;
 /**
  * The possible shape types
  */
