@@ -139,6 +139,10 @@ export abstract class Composer {
      */
     public getLives(): number {
         this.initLivesComponentIfNeeded();
+
+        // Return -1 if no lives component
+        if (!this.livesComponent) return -1;
+
         return this.livesComponent?.getLives() ?? 0;
     }
     /**
